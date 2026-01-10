@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    {# SEO Meta Tags #}
+    <title>{% block title %}{{ page_title|default:"Tawi Meridian" }} | {{ site_name }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ meta_description|default:site_description }}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}engineering, data science, renewable energy, government contracting, climate solutions, consulting{% endblock %}">
+    <meta name="author" content="Tawi Meridian LLC">
+    
+    {# Open Graph / Facebook #}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}{{ page_title|default:"Tawi Meridian" }} | {{ site_name }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ meta_description|default:site_description }}{% endblock %}">
+    {% block og_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}">
+    {% endblock %}
+    
+    {# Twitter #}
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{% block twitter_title %}{{ page_title|default:"Tawi Meridian" }} | {{ site_name }}{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}{{ meta_description|default:site_description }}{% endblock %}">
+    
+    {# Favicon - Use logo or separate favicon #}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    
+    {# Tailwind CSS #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tawi-blue': '#1e3a8a',      // Deep navy blue
+                        'tawi-orange': '#f97316',    // Vibrant orange/amber
+                        'tawi-green': '#059669',     // Forest green
+                        'tawi-light': '#f8fafc',     // Light gray
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'heading': ['Montserrat', 'Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    {# Google Fonts #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    {# Heroicons #}
+    <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/index.js" type="module"></script>
+    
+    {# Custom CSS #}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    {# Google Analytics #}
+    {% if google_analytics_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ google_analytics_id }}');
+    </script>
+    {% endif %}
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full flex flex-col bg-white text-gray-900">
+    {# Navigation #}
+    {% include 'partials/navbar.html' %}
+    
+    {# Messages #}
+    {% if messages %}
+    <div class="container mx-auto px-4 mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {# Main Content #}
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    
+    {# Footer #}
+    {% include 'partials/footer.html' %}
+    
+    {# JavaScript #}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    
+    {# HTMX (if using) #}
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</body>
+</html>

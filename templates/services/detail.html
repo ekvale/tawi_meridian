@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ service.display_title }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ service.display_description }}{% endblock %}
+
+{% block content %}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="font-heading font-bold text-4xl md:text-5xl text-tawi-blue mb-6">{{ service.title }}</h1>
+            
+            {% if service.featured_image %}
+            <img src="{{ service.featured_image.url }}" alt="{{ service.title }}" class="w-full h-64 object-cover rounded-lg mb-8">
+            {% endif %}
+            
+            <div class="prose prose-lg max-w-none mb-8">
+                <p class="text-xl text-gray-600 mb-6">{{ service.short_description }}</p>
+                <div class="text-gray-700">
+                    {{ service.full_description|linebreaks }}
+                </div>
+            </div>
+            
+            {% if features %}
+            <div class="mt-12">
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mb-6">Key Features</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for feature in features %}
+                    <div class="bg-tawi-light rounded-lg p-6">
+                        <h3 class="font-semibold text-lg text-tawi-blue mb-2">{{ feature.title }}</h3>
+                        <p class="text-gray-600">{{ feature.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mt-12 text-center">
+                <a href="{% url 'contact:contact' %}" class="bg-tawi-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors inline-block">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if other_services %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Other Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {% for other_service in other_services %}
+            <a href="{{ other_service.get_absolute_url }}" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow block">
+                <h3 class="font-semibold text-lg text-tawi-blue mb-2">{{ other_service.title }}</h3>
+                <p class="text-gray-600 text-sm">{{ other_service.short_description|truncatewords:15 }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

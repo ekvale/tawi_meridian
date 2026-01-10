@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}Message Received | {{ site_name }}{% endblock %}
+{% block og_description %}Thank you for contacting Tawi Meridian.{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-tawi-light min-h-screen flex items-center">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto text-center bg-white rounded-lg shadow-lg p-12">
+            <div class="w-24 h-24 bg-green-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            
+            <h1 class="font-heading font-bold text-3xl md:text-4xl text-tawi-blue mb-4">Thank You!</h1>
+            <p class="text-xl text-gray-600 mb-6">
+                We have received your message and will respond within 2-3 business days.
+            </p>
+            <p class="text-gray-600 mb-8">
+                In the meantime, feel free to explore our <a href="{% url 'portfolio:case_study_list' %}" class="text-tawi-blue hover:text-blue-800 font-semibold">case studies</a> 
+                or learn more about our <a href="{% url 'services:service_list' %}" class="text-tawi-blue hover:text-blue-800 font-semibold">services</a>.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'core:home' %}" class="bg-tawi-blue hover:bg-blue-800 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                    Return Home
+                </a>
+                <a href="{% url 'portfolio:case_study_list' %}" class="bg-tawi-light hover:bg-gray-200 text-tawi-blue px-8 py-3 rounded-lg font-semibold transition-colors border border-tawi-blue">
+                    View Our Work
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ page_title }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ meta_description }}{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="font-heading font-bold text-4xl md:text-5xl text-tawi-blue mb-4">Our Services</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                {{ meta_description }}
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for service in services %}
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-tawi-orange/10 rounded-lg mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-tawi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h2 class="font-semibold text-xl text-tawi-blue mb-2">{{ service.title }}</h2>
+                <p class="text-gray-600 mb-4">{{ service.short_description }}</p>
+                <a href="{{ service.get_absolute_url }}" class="text-tawi-orange hover:text-orange-600 font-semibold">
+                    Learn More →
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center text-gray-500 py-12">
+                <p>No services available at this time.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-tawi-blue text-white rounded-lg mr-2">Previous</a>
+            {% endif %}
+            <span class="px-4 py-2 text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-tawi-blue text-white rounded-lg ml-2">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

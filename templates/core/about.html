@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{# Hero Section #}
+<section class="bg-gradient-to-br from-tawi-blue to-blue-900 text-white py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            {# Logo in About Hero - Circular with white background for visibility on blue #}
+            <div class="mb-8 flex justify-center">
+                <div class="w-36 h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 rounded-full bg-white shadow-2xl p-4 md:p-5 lg:p-6 flex items-center justify-center border-4 border-white/90 ring-4 ring-white/50 hover:shadow-3xl hover:ring-white/70 hover:border-white transition-all duration-300 transform hover:scale-105">
+                    <img src="{% static 'images/logo.png' %}" alt="Tawi Meridian Logo" class="w-full h-full object-contain" id="about-hero-logo" onerror="this.style.display='none'; document.getElementById('about-logo-placeholder').classList.remove('hidden');">
+                    <div id="about-logo-placeholder" class="hidden w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br from-tawi-green/30 to-tawi-blue/30">
+                        <span class="font-heading font-bold text-2xl md:text-3xl text-tawi-blue">TM</span>
+                    </div>
+                </div>
+            </div>
+            <h1 class="font-heading font-bold text-4xl md:text-5xl mb-6">About Tawi Meridian</h1>
+            <p class="text-xl text-blue-100">
+                Engineering excellence meets social impact
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Company Story #}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="prose prose-lg max-w-none">
+                <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-6">Our Story</h2>
+                <p class="text-gray-700 mb-4">
+                    Tawi Meridian was founded on the belief that technical excellence and social impact are not mutually exclusive. 
+                    We bring together deep engineering expertise, data science capabilities, and a commitment to sustainable development 
+                    to solve complex challenges for government agencies, international organizations, and forward-thinking corporations.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    Our name "Tawi" represents connection and unity—bringing together diverse perspectives, technologies, and communities 
+                    to create meaningful change. "Meridian" reflects our global perspective and commitment to guiding our clients toward 
+                    sustainable solutions.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Mission & Values #}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Our Mission</h2>
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <p class="text-xl text-gray-700 text-center italic">
+                    "Engineering Climate Solutions, Building Community Resilience"
+                </p>
+                <p class="text-gray-600 text-center mt-4">
+                    We deliver data science and engineering excellence for government missions while creating sustainable impact 
+                    that empowers communities and protects our planet.
+                </p>
+            </div>
+            
+            <h3 class="font-heading font-bold text-2xl text-tawi-blue mb-6 text-center">Our Values</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h4 class="font-semibold text-lg text-tawi-blue mb-2">Technical Excellence</h4>
+                    <p class="text-gray-600">We maintain the highest standards in engineering and data science, continuously learning and innovating.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h4 class="font-semibold text-lg text-tawi-blue mb-2">Sustainable Impact</h4>
+                    <p class="text-gray-600">Every solution we design considers environmental, social, and economic sustainability.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h4 class="font-semibold text-lg text-tawi-blue mb-2">Community Empowerment</h4>
+                    <p class="text-gray-600">We build capacity and transfer knowledge, enabling communities to drive their own progress.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h4 class="font-semibold text-lg text-tawi-blue mb-2">Collaboration & Trust</h4>
+                    <p class="text-gray-600">We work transparently with our clients and partners, building long-term relationships based on trust.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Founders #}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Our Founders</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {# 51% Owner - Sharon Memoi #}
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden bg-gradient-to-br from-tawi-orange/20 to-tawi-orange/10 flex items-center justify-center border-4 border-tawi-orange/30 shadow-lg relative">
+                        <img src="{% static 'images/sharon-memoi.jfif' %}" alt="Sharon Memoi - Co-Founder of Tawi Meridian" class="w-full h-full object-cover" id="sharon-photo" onerror="this.style.display='none'; document.getElementById('sharon-placeholder').style.display='flex';">
+                        <div id="sharon-placeholder" class="w-full h-full flex items-center justify-center hidden">
+                            <div class="text-center">
+                                <svg class="w-20 h-20 text-tawi-orange mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                <p class="text-xs text-tawi-orange font-semibold">Photo Coming Soon</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl text-tawi-blue mb-2 text-center">Sharon Memoi</h3>
+                    <p class="text-tawi-orange font-semibold text-center mb-4">Managing Member, Chief Executive Officer & Co-Founder</p>
+                    
+                    <div class="text-gray-700 text-sm space-y-3">
+                        <p>
+                            <strong class="text-tawi-blue">Her Journey:</strong> Sharon's path to engineering excellence began when she was 
+                            chosen for the prestigious <strong>Alliance Girls High School</strong> in Kenya, one of the country's most respected 
+                            educational institutions. This foundation launched her toward a distinguished career in engineering.
+                        </p>
+                        
+                        <p>
+                            Continuing her pursuit of excellence, Sharon earned a <strong>Bachelor of Science in Mechanical Engineering</strong> 
+                            from the <strong>University of Minnesota</strong>, where she honed her technical expertise and passion for sustainable solutions.
+                        </p>
+                        
+                        <p>
+                            Driven by her commitment to community empowerment and climate action, Sharon founded <strong>Go Green Kenya</strong>, 
+                            a nonprofit organization dedicated to environmental education and sustainable development initiatives across Kenya.
+                        </p>
+                        
+                        <p>
+                            As a <strong>lead researcher and economic modeler</strong>, Sharon spearheaded innovative work on hybrid solar-biomass 
+                            greenhouse dryers for processing mangos in Kenya. This groundbreaking project combined renewable energy technology with 
+                            agricultural innovation, demonstrating her ability to bridge technical excellence with real-world impact.
+                        </p>
+                        
+                        <p class="pt-2 border-t border-gray-200">
+                            Sharon's journey—from a top Kenyan high school to a U.S. engineering degree, from nonprofit founder to cutting-edge 
+                            researcher—exemplifies Tawi Meridian's mission: technical excellence rooted in community impact and sustainable development.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200 bg-tawi-light/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-tawi-blue mb-2">Management Role</h4>
+                        <p class="text-sm text-gray-700">
+                            As <strong>Managing Member and Chief Executive Officer</strong>, Sharon has full authority over day-to-day operations, 
+                            business development, client relationships, and strategic direction of Tawi Meridian. All contracts, proposals, and 
+                            client agreements are executed by the Managing Member, and all major business decisions require her approval.
+                        </p>
+                    </div>
+                </div>
+                
+                {# 49% Owner - Eric Kvale #}
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden bg-gradient-to-br from-tawi-green/20 to-tawi-green/10 flex items-center justify-center border-4 border-tawi-green/30 shadow-lg relative">
+                        <img src="{% static 'images/eric_kvale.png' %}" alt="Eric Kvale - Co-Founder of Tawi Meridian" class="w-full h-full object-cover" id="eric-photo" onerror="this.style.display='none'; document.getElementById('eric-placeholder').style.display='flex';">
+                        <div id="eric-placeholder" class="w-full h-full flex items-center justify-center hidden">
+                            <div class="text-center">
+                                <svg class="w-20 h-20 text-tawi-green mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                </svg>
+                                <p class="text-xs text-tawi-green font-semibold">Photo Coming Soon</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-xl text-tawi-blue mb-2 text-center">Eric Kvale</h3>
+                    <p class="text-tawi-green font-semibold text-center mb-4">Chief Technology Officer, Senior Data Scientist & Co-Founder</p>
+                    
+                    <div class="text-gray-700 text-sm space-y-3">
+                        <p>
+                            <strong class="text-tawi-blue">Professional Experience:</strong> Eric serves as a <strong>Senior Data Scientist</strong> 
+                            with the <strong>Minnesota Department of Health</strong>, where he applies advanced analytics and data science techniques 
+                            to public health challenges. His expertise in government systems and public health data ensures that Tawi Meridian's 
+                            solutions are data-driven, efficient, and aligned with real-world agency requirements.
+                        </p>
+                        
+                        <p>
+                            <strong class="text-tawi-blue">Technical Leadership:</strong> In 2025, Eric was a <strong>presenter at ShinyConf</strong>, 
+                            the premier conference for R and Shiny developers, where he delivered a presentation on <strong>AI, R, and accessibility</strong>. 
+                            This recognition highlights his expertise at the intersection of data science, artificial intelligence, and inclusive design.
+                        </p>
+                        
+                        <p>
+                            Eric brings deep expertise in data science, analytics, and government contracting to Tawi Meridian. His experience with 
+                            public health data systems and government workflows enables seamless integration with federal and state agency requirements, 
+                            while his commitment to accessibility ensures that our solutions serve all users effectively.
+                        </p>
+                        
+                        <p class="pt-2 border-t border-gray-200">
+                            Through his work at MDH and his contributions to the data science community, Eric embodies Tawi Meridian's commitment to 
+                            technical excellence, accessibility, and data-driven solutions that create meaningful impact.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200 bg-tawi-light/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-tawi-blue mb-2">Management Role</h4>
+                        <p class="text-sm text-gray-700">
+                            As <strong>Chief Technology Officer & Senior Data Scientist</strong>, Eric provides technical expertise and project delivery 
+                            on a consulting basis. Eric maintains separate full-time employment with the Minnesota Department of Health and provides 
+                            services to Tawi Meridian during non-working hours. Eric's involvement is expected to transition from part-time consulting 
+                            to full-time employment as business revenue supports, anticipated within 18-24 months of formation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Management Structure #}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Management Structure</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+                <div class="border-l-4 border-tawi-blue pl-6">
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-2">1. Managing Member & CEO</h3>
+                    <p class="text-gray-700">
+                        <strong>Sharon Memoi</strong> serves as Managing Member and Chief Executive Officer, with full authority over 
+                        day-to-day operations, business development, client relationships, and strategic direction. All contracts, proposals, 
+                        and client agreements are executed by the Managing Member. All major business decisions (expenditures, hiring, strategic 
+                        partnerships) require approval of the Managing Member.
+                    </p>
+                </div>
+                
+                <div class="border-l-4 border-tawi-green pl-6">
+                    <h3 class="font-semibold text-lg text-tawi-green mb-2">2. Chief Technology Officer & Senior Data Scientist</h3>
+                    <p class="text-gray-700">
+                        <strong>Eric Kvale</strong> serves as Chief Technology Officer & Senior Data Scientist, providing technical expertise 
+                        and project delivery on a consulting basis. Eric maintains separate full-time employment with the Minnesota Department 
+                        of Health and provides services to Tawi Meridian during non-working hours.
+                    </p>
+                </div>
+                
+                <div class="border-l-4 border-tawi-orange pl-6 bg-tawi-light/50 p-4 rounded-r-lg">
+                    <h3 class="font-semibold text-lg text-tawi-orange mb-2">3. Future Growth</h3>
+                    <p class="text-gray-700">
+                        Eric's involvement is expected to transition from part-time consulting to full-time employment as business revenue 
+                        supports, anticipated within 18-24 months of formation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Office Locations #}
+{% if office_locations %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Our Locations</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {% for location in office_locations %}
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="font-semibold text-xl text-tawi-blue mb-4">{{ location.name }}</h3>
+                <div class="text-gray-600 space-y-2">
+                    <p>{{ location.get_full_address }}</p>
+                    {% if location.phone %}
+                    <p><a href="tel:{{ location.phone }}" class="text-tawi-blue hover:text-blue-800">{{ location.phone }}</a></p>
+                    {% endif %}
+                    {% if location.email %}
+                    <p><a href="mailto:{{ location.email }}" class="text-tawi-blue hover:text-blue-800">{{ location.email }}</a></p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# CTA Section #}
+<section class="py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-4">Let's Work Together</h2>
+        <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            Ready to discuss your project? Get in touch with our team.
+        </p>
+        <a href="{% url 'contact:contact' %}" class="bg-tawi-orange hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-block">
+            Contact Us
+        </a>
+    </div>
+</section>
+{% endblock %}

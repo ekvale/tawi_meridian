@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ page_title }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ meta_description }}{% endblock %}
+
+{% block content %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="font-heading font-bold text-4xl md:text-5xl text-tawi-blue mb-4">Portfolio & Case Studies</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                {{ meta_description }}
+            </p>
+        </div>
+        
+        {# Filters #}
+        <div class="mb-8 flex flex-wrap gap-4 justify-center">
+            <a href="{% url 'portfolio:case_study_list' %}" class="px-4 py-2 rounded-lg {% if not selected_client_type %}bg-tawi-blue text-white{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+                All
+            </a>
+            {% for client_type_value, client_type_label in client_types %}
+            <a href="?client_type={{ client_type_value }}" class="px-4 py-2 rounded-lg {% if selected_client_type == client_type_value %}bg-tawi-blue text-white{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+                {{ client_type_label }}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for case_study in case_studies %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                {% if case_study.hero_image %}
+                <img src="{{ case_study.hero_image.url }}" alt="{{ case_study.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-tawi-orange mb-2">{{ case_study.get_client_type_display }}</div>
+                    <h2 class="font-semibold text-xl text-tawi-blue mb-2">{{ case_study.title }}</h2>
+                    <p class="text-gray-600 mb-4">{{ case_study.challenge|truncatewords:20 }}</p>
+                    <a href="{{ case_study.get_absolute_url }}" class="text-tawi-blue hover:text-blue-800 font-semibold">
+                        Read Case Study →
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center text-gray-500 py-12">
+                <p>No case studies available at this time.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-tawi-blue text-white rounded-lg mr-2">Previous</a>
+            {% endif %}
+            <span class="px-4 py-2 text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-tawi-blue text-white rounded-lg ml-2">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

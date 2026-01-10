@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ post.display_title }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ post.display_description }}{% endblock %}
+
+{% block content %}
+<article class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-sm text-tawi-orange mb-4">{{ post.get_category_display }}</div>
+            <h1 class="font-heading font-bold text-4xl md:text-5xl text-tawi-blue mb-6">{{ post.title }}</h1>
+            
+            <div class="flex items-center text-gray-600 mb-8">
+                <span class="font-semibold mr-4">{{ post.author }}</span>
+                <span>{{ post.published_date|date:"F d, Y" }}</span>
+            </div>
+            
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-96 object-cover rounded-lg mb-8">
+            {% endif %}
+            
+            <div class="prose prose-lg max-w-none">
+                <div class="text-gray-700 mb-8">
+                    {{ post.content|linebreaks }}
+                </div>
+            </div>
+            
+            {% if tags_list %}
+            <div class="mt-8 pt-8 border-t border-gray-200">
+                <h3 class="font-semibold text-lg text-tawi-blue mb-4">Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in tags_list %}
+                    <a href="?tag={{ tag }}" class="bg-tawi-light px-3 py-1 rounded-full text-sm text-gray-700 hover:bg-gray-200">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mt-8 pt-8 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <a href="{% url 'blog:blog_list' %}" class="text-tawi-blue hover:text-blue-800 font-semibold">
+                        ← Back to Blog
+                    </a>
+                    <a href="{% url 'blog:blog_feed' %}" class="text-tawi-blue hover:text-blue-800 font-semibold">
+                        Subscribe to RSS →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+{% if related_posts %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Related Posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {% for related in related_posts %}
+            <a href="{{ related.get_absolute_url }}" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow block">
+                {% if related.featured_image %}
+                <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-2">{{ related.title }}</h3>
+                    <p class="text-gray-600 text-sm">{{ related.excerpt|truncatewords:15 }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

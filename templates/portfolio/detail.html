@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ case_study.display_title }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ case_study.display_description }}{% endblock %}
+
+{% block content %}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-sm text-tawi-orange mb-4">{{ case_study.get_client_type_display }}</div>
+            <h1 class="font-heading font-bold text-4xl md:text-5xl text-tawi-blue mb-6">{{ case_study.title }}</h1>
+            
+            {% if case_study.hero_image %}
+            <img src="{{ case_study.hero_image.url }}" alt="{{ case_study.title }}" class="w-full h-96 object-cover rounded-lg mb-8">
+            {% endif %}
+            
+            <div class="prose prose-lg max-w-none">
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mt-8 mb-4">The Challenge</h2>
+                <p class="text-gray-700 mb-8">{{ case_study.challenge|linebreaks }}</p>
+                
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mt-8 mb-4">Our Solution</h2>
+                <p class="text-gray-700 mb-8">{{ case_study.solution|linebreaks }}</p>
+                
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mt-8 mb-4">Results & Impact</h2>
+                <p class="text-gray-700 mb-8">{{ case_study.results|linebreaks }}</p>
+                
+                {% if case_study.technologies %}
+                <div class="mt-8">
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-2">Technologies Used</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tech in case_study.technologies_list %}
+                        <span class="bg-tawi-light px-3 py-1 rounded-full text-sm text-gray-700">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if testimonials %}
+            <div class="mt-12 bg-tawi-light rounded-lg p-8">
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mb-6">Client Testimonial</h2>
+                {% for testimonial in testimonials %}
+                <blockquote class="text-lg text-gray-700 italic mb-4">"{{ testimonial.quote }}"</blockquote>
+                <p class="font-semibold text-tawi-blue">— {{ testimonial.author_name }}{% if testimonial.author_title %}, {{ testimonial.author_title }}{% endif %}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if related_case_studies %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <h2 class="font-heading font-bold text-3xl text-tawi-blue mb-8 text-center">Related Case Studies</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {% for related in related_case_studies %}
+            <a href="{{ related.get_absolute_url }}" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow block">
+                {% if related.hero_image %}
+                <img src="{{ related.hero_image.url }}" alt="{{ related.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-2">{{ related.title }}</h3>
+                    <p class="text-gray-600 text-sm">{{ related.challenge|truncatewords:15 }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

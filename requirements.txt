@@ -1,0 +1,54 @@
+# Django Core
+Django>=5.0,<6.0
+django-environ>=0.11.2
+django-extensions>=3.2.3
+
+# Database
+psycopg2-binary>=2.9.9
+
+# API (optional but included for future use)
+djangorestframework>=3.14.0
+
+# HTMX for dynamic interactions
+django-htmx>=1.18.0
+
+# Static Files & Media
+whitenoise>=6.6.0
+Pillow>=10.2.0
+django-storages>=1.14.2
+boto3>=1.34.0
+
+# Forms & Security
+django-crispy-forms>=2.1
+crispy-bootstrap5>=0.7
+django-ratelimit>=4.1.0
+django-honeypot>=0.8.0
+django-csp>=3.8
+
+# Email
+sendgrid>=6.10.0
+
+# PDF Generation (for capabilities statement)
+reportlab>=4.0.9
+WeasyPrint>=60.1
+
+# SEO & Sitemaps
+# django-contrib-comments is deprecated in Django 1.8+, not needed
+
+# Utilities
+python-decouple>=3.8
+requests>=2.31.0
+
+# Testing
+pytest>=7.4.3
+pytest-django>=4.7.0
+pytest-cov>=4.1.0
+factory-boy>=3.3.0
+
+# Development
+black>=23.12.1
+flake8>=6.1.0
+isort>=5.13.2
+
+# Production Server
+gunicorn>=21.2.0

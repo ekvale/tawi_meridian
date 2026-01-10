@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block og_title %}{{ page_title|default:"Home" }} | {{ site_name }}{% endblock %}
+{% block og_description %}{{ meta_description|default:"Engineering Climate Solutions, Building Community Resilience" }}{% endblock %}
+
+{% block content %}
+{# Hero Section #}
+<section class="bg-gradient-to-br from-tawi-blue to-blue-900 text-white py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="font-heading font-bold text-4xl md:text-5xl lg:text-6xl mb-6">
+                Engineering Climate Solutions,<br>Building Community Resilience
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-100 mb-8">
+                From solar driers in rural Kenya to data-driven solutions - 
+                Tawi Meridian delivers technical excellence with grassroots impact.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'contact:contact' %}" class="bg-tawi-orange hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors">
+                    Start Your Project
+                </a>
+                <a href="{% url 'portfolio:case_study_list' %}" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors border border-white/20">
+                    View Our Work
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Impact Metrics #}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="text-5xl font-bold text-tawi-blue mb-2" data-count="{{ impact_metrics.education_kenyans }}">
+                    {{ impact_metrics.education_kenyans }}+
+                </div>
+                <p class="text-gray-600 text-lg">Kenyans empowered through climate education</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold text-tawi-green mb-2" data-count="{{ impact_metrics.energy_savings_percent }}">
+                    {{ impact_metrics.energy_savings_percent }}%
+                </div>
+                <p class="text-gray-600 text-lg">Energy savings through hybrid renewable systems</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold text-tawi-orange mb-2" data-count="{{ impact_metrics.automated_scripts }}">
+                    {{ impact_metrics.automated_scripts }}+
+                </div>
+                <p class="text-gray-600 text-lg">Automated database scripts managing public health data</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Services Section #}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl text-tawi-blue mb-4">Our Services</h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                Comprehensive engineering, data science, and consulting solutions for government agencies and organizations
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for service in services %}
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+                <div class="flex items-center justify-center w-16 h-16 bg-tawi-orange/10 rounded-lg mb-4">
+                    <svg class="w-8 h-8 text-tawi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {# Icon placeholder - would use heroicons or similar #}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h3 class="font-semibold text-xl text-tawi-blue mb-2">{{ service.title }}</h3>
+                <p class="text-gray-600 mb-4">{{ service.short_description|truncatewords:20 }}</p>
+                <a href="{{ service.get_absolute_url }}" class="text-tawi-orange hover:text-orange-600 font-semibold">
+                    Learn More →
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center text-gray-500">
+                <p>Services coming soon...</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'services:service_list' %}" class="text-tawi-blue hover:text-blue-800 font-semibold text-lg">
+                View All Services →
+            </a>
+        </div>
+    </div>
+</section>
+
+{# Featured Case Studies #}
+{% if featured_case_studies %}
+<section class="py-16 bg-tawi-light">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl text-tawi-blue mb-4">Featured Projects</h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                Real solutions delivering measurable impact for our clients
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for case_study in featured_case_studies %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                {% if case_study.hero_image %}
+                <img src="{{ case_study.hero_image.url }}" alt="{{ case_study.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6">
+                    <div class="text-sm text-tawi-orange mb-2">{{ case_study.get_client_type_display }}</div>
+                    <h3 class="font-semibold text-xl text-tawi-blue mb-2">{{ case_study.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ case_study.challenge|truncatewords:20 }}</p>
+                    <a href="{{ case_study.get_absolute_url }}" class="text-tawi-blue hover:text-blue-800 font-semibold">
+                        Read Case Study →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'portfolio:case_study_list' %}" class="text-tawi-blue hover:text-blue-800 font-semibold text-lg">
+                View All Case Studies →
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Certifications Section #}
+{% if featured_certifications %}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-8">
+            <h2 class="font-heading font-bold text-2xl md:text-3xl text-tawi-blue mb-4">Certifications & Credentials</h2>
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-8">
+            {% for cert in featured_certifications %}
+            <div class="flex flex-col items-center">
+                {% if cert.logo %}
+                <img src="{{ cert.logo.url }}" alt="{{ cert.name }}" class="h-16 w-auto opacity-75 hover:opacity-100 transition-opacity">
+                {% else %}
+                <div class="bg-tawi-light rounded-lg px-6 py-4 text-center">
+                    <div class="font-semibold text-tawi-blue">{{ cert.abbreviation|default:cert.name }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# CTA Section #}
+<section class="py-16 bg-gradient-to-r from-tawi-blue to-blue-800 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="font-heading font-bold text-3xl md:text-4xl mb-4">Ready to Start Your Project?</h2>
+        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Let's discuss how Tawi Meridian can help you achieve your goals with technical excellence and sustainable impact.
+        </p>
+        <a href="{% url 'contact:contact' %}" class="bg-tawi-orange hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-block">
+            Get In Touch
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple counter animation for metrics
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('[data-count]');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    const displayValue = Math.floor(current);
+                    if (counter.textContent.includes('+')) {
+                        counter.textContent = displayValue + '+';
+                    } else if (counter.textContent.includes('%')) {
+                        counter.textContent = displayValue + '%';
+                    } else {
+                        counter.textContent = displayValue;
+                    }
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target + (counter.textContent.includes('+') ? '+' : counter.textContent.includes('%') ? '%' : '');
+                }
+            };
+            
+            // Start animation when element is in viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            observer.observe(counter);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block og_title %}Contact Us | {{ site_name }}{% endblock %}
+{% block og_description %}{{ meta_description|default:"Get in touch with Tawi Meridian for engineering, data science, and consulting services." }}{% endblock %}
+
+{% block content %}
+{# Hero Section #}
+<section class="bg-gradient-to-br from-tawi-blue to-blue-900 text-white py-16">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="font-heading font-bold text-4xl md:text-5xl mb-6">Contact Us</h1>
+            <p class="text-xl text-blue-100">
+                Let's discuss your project and how we can help you achieve your goals
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Contact Form & Info #}
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {# Contact Form #}
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mb-6">Send Us a Message</h2>
+                
+                <form method="post" action="{% url 'contact:contact' %}" data-validate>
+                    {% csrf_token %}
+                    {% load honeypot %}
+                    {% render_honeypot_field %}
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.name.label }}
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.name.errors }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.email.label }}
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.email.errors }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.organization.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.organization.label }}
+                            </label>
+                            {{ form.organization }}
+                            {% if form.organization.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.organization.errors }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.project_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.project_type.label }}
+                            </label>
+                            {{ form.project_type }}
+                            {% if form.project_type.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.project_type.errors }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.message.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.message.label }}
+                            </label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.message.errors }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.budget_range.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.budget_range.label }}
+                            </label>
+                            {{ form.budget_range }}
+                            {% if form.budget_range.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.budget_range.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                    <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-red-600 text-sm">{{ form.non_field_errors }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-6">
+                        <button type="submit" class="w-full bg-tawi-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            {# Contact Information #}
+            <div>
+                <h2 class="font-heading font-bold text-2xl text-tawi-blue mb-6">Get In Touch</h2>
+                
+                {% if office_locations %}
+                <div class="space-y-6 mb-8">
+                    {% for location in office_locations %}
+                    <div class="bg-tawi-light rounded-lg p-6">
+                        <h3 class="font-semibold text-lg text-tawi-blue mb-3">{{ location.name }}</h3>
+                        <div class="text-gray-600 space-y-2">
+                            <p>{{ location.get_full_address }}</p>
+                            {% if location.phone %}
+                            <p>
+                                <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                                <a href="tel:{{ location.phone }}" class="text-tawi-blue hover:text-blue-800">{{ location.phone }}</a>
+                            </p>
+                            {% endif %}
+                            {% if location.email %}
+                            <p>
+                                <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <a href="mailto:{{ location.email }}" class="text-tawi-blue hover:text-blue-800">{{ location.email }}</a>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="bg-tawi-light rounded-lg p-6">
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-3">Response Time</h3>
+                    <p class="text-gray-600 mb-4">
+                        We typically respond to inquiries within 2-3 business days. 
+                        For urgent matters, please call us directly.
+                    </p>
+                    
+                    <h3 class="font-semibold text-lg text-tawi-blue mb-3 mt-6">Capabilities Statement</h3>
+                    <p class="text-gray-600 mb-4">
+                        Download our capability statements for more information about our services and qualifications.
+                    </p>
+                    <div class="space-y-2">
+                        <a href="{% url 'contact:capability_download' 'general' %}" class="block text-tawi-blue hover:text-blue-800 font-semibold">
+                            → General Capability Statement
+                        </a>
+                        <a href="{% url 'contact:capability_download' 'federal' %}" class="block text-tawi-blue hover:text-blue-800 font-semibold">
+                            → Federal Capability Statement
+                        </a>
+                        <a href="{% url 'contact:capability_download' 'international' %}" class="block text-tawi-blue hover:text-blue-800 font-semibold">
+                            → International Capability Statement
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
