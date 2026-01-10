@@ -23,11 +23,51 @@ This guide walks you through deploying the Tawi Meridian website to a DigitalOce
 
 ## Step 2: Initial Server Setup
 
-### Connect to your droplet
+### Connect to your droplet (Initial Root Access)
 
 ```bash
 ssh root@146.190.37.164
 ```
+
+### Create non-root admin user (Security Best Practice)
+
+**⚠️ IMPORTANT**: Before deploying, create a non-root user with sudo privileges.
+
+**Option A: Use the automated script (recommended)**
+
+```bash
+# Download and run the admin user creation script
+curl -O https://raw.githubusercontent.com/ekvale/tawi_meridian/main/deployment/create_admin_user.sh
+chmod +x create_admin_user.sh
+bash create_admin_user.sh
+```
+
+**Option B: Manual creation**
+
+```bash
+# Create admin user (replace 'admin' with your preferred username)
+adduser admin
+
+# Add user to sudo group
+usermod -aG sudo admin
+
+# Copy SSH keys to new user (if using SSH key authentication)
+mkdir -p /home/admin/.ssh
+cp ~/.ssh/authorized_keys /home/admin/.ssh/
+chown -R admin:admin /home/admin/.ssh
+chmod 700 /home/admin/.ssh
+chmod 600 /home/admin/.ssh/authorized_keys
+
+# Exit and reconnect
+exit
+```
+
+Now reconnect using your new user:
+```bash
+ssh admin@146.190.37.164
+```
+
+**Note**: The setup script will create a separate `tawimeridian` user for running the Django application. The admin user is for system administration.
 
 ### Run the setup script
 
