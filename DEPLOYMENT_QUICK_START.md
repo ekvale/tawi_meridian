@@ -3,13 +3,58 @@
 **Your Droplet IP**: `146.190.37.164`  
 **Repository**: https://github.com/ekvale/tawi_meridian.git
 
-## Step 1: Connect to Your Droplet
+## Step 1: Connect to Your Droplet (Initial Root Access)
 
 ```bash
 ssh root@146.190.37.164
 ```
 
-## Step 2: Run Initial Server Setup
+## Step 2: Create Non-Root Admin User (Security Best Practice)
+
+**⚠️ IMPORTANT**: Create a non-root user with sudo privileges for security.
+
+**Option A: Use the automated script (recommended)**
+
+```bash
+# Download and run the admin user creation script
+curl -O https://raw.githubusercontent.com/ekvale/tawi_meridian/main/deployment/create_admin_user.sh
+chmod +x create_admin_user.sh
+sudo bash create_admin_user.sh
+```
+
+**Option B: Manual creation**
+
+```bash
+# Create admin user (replace 'admin' with your preferred username)
+adduser admin
+
+# Add user to sudo group
+usermod -aG sudo admin
+
+# Copy SSH keys to new user (recommended)
+mkdir -p /home/admin/.ssh
+cp ~/.ssh/authorized_keys /home/admin/.ssh/
+chown -R admin:admin /home/admin/.ssh
+chmod 700 /home/admin/.ssh
+chmod 600 /home/admin/.ssh/authorized_keys
+
+# Exit and reconnect
+exit
+```
+
+Now reconnect using your new user:
+```bash
+ssh admin@146.190.37.164
+```
+
+Verify sudo works:
+```bash
+sudo whoami  # Should output: root
+```
+
+**Note**: The setup script will create a separate `tawimeridian` user for running the Django application. The admin user is for system administration.
+
+## Step 3: Run Initial Server Setup
 
 ```bash
 # Download setup script
