@@ -28,9 +28,22 @@ USERNAME=${USERNAME:-admin}
 if ! id "$USERNAME" &>/dev/null; then
     echo -e "${RED}User '$USERNAME' does not exist!${NC}"
     echo -e "${YELLOW}Creating user first...${NC}"
-    adduser --disabled-password --gecos "" $USERNAME
+    
+    # Create user (handle case where group already exists)
+    if getent group "$USERNAME" > /dev/null 2>&1; then
+        # Group exists, create user without creating group
+        useradd -m -s /bin/bash $USERNAME
+    else
+        # Create user normally
+        adduser --disabled-password --gecos "" $USERNAME
+    fi
+    
+    # Set password
     passwd $USERNAME
+    
+    # Add to sudo group
     usermod -aG sudo $USERNAME
+    echo -e "${GREEN}✓ User '$USERNAME' created${NC}"
 fi
 
 # Copy SSH keys from root
