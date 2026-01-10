@@ -52,6 +52,38 @@ Verify sudo works:
 sudo whoami  # Should output: root
 ```
 
+**⚠️ Troubleshooting SSH Access**
+
+If you get "Permission denied (publickey)" error:
+
+1. **Go back as root**:
+   ```bash
+   exit  # if you're logged in
+   ssh root@146.190.37.164
+   ```
+
+2. **Run the SSH fix script**:
+   ```bash
+   curl -O https://raw.githubusercontent.com/ekvale/tawi_meridian/main/deployment/fix_admin_ssh.sh
+   chmod +x fix_admin_ssh.sh
+   bash fix_admin_ssh.sh
+   ```
+
+3. **Or manually copy SSH keys**:
+   ```bash
+   mkdir -p /home/admin/.ssh
+   cp /root/.ssh/authorized_keys /home/admin/.ssh/
+   chown -R admin:admin /home/admin/.ssh
+   chmod 700 /home/admin/.ssh
+   chmod 600 /home/admin/.ssh/authorized_keys
+   ```
+
+4. **Then try connecting again**:
+   ```bash
+   exit
+   ssh admin@146.190.37.164
+   ```
+
 **Note**: The setup script will create a separate `tawimeridian` user for running the Django application. The admin user is for system administration.
 
 ## Step 3: Run Initial Server Setup
