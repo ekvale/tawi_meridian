@@ -26,7 +26,7 @@ This guide walks you through deploying the Tawi Meridian website to a DigitalOce
 ### Connect to your droplet
 
 ```bash
-ssh root@your-droplet-ip
+ssh root@146.190.37.164
 ```
 
 ### Run the setup script
@@ -96,7 +96,7 @@ nano .env  # Edit with your production values
 **Important variables to set:**
 - `SECRET_KEY`: Generate a new secret key (use `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`)
 - `DEBUG=False`
-- `ALLOWED_HOSTS`: Your domain and droplet IP
+- `ALLOWED_HOSTS`: Your domain and droplet IP (e.g., `tawimeridian.com,www.tawimeridian.com,146.190.37.164`)
 - `DATABASE_URL`: PostgreSQL connection string
 - `EMAIL_*`: Email service configuration
 - `GOOGLE_ANALYTICS_ID`: Your Google Analytics ID
@@ -187,15 +187,15 @@ sudo systemctl status tawimeridian
 ### Point domain to droplet
 
 1. Go to your domain registrar
-2. Create an A record pointing to your droplet IP:
+2. Create an A record pointing to your droplet IP (146.190.37.164):
    - Type: A
    - Name: @ (or blank)
-   - Value: your-droplet-ip
+   - Value: 146.190.37.164
    - TTL: 3600
 3. Create another A record for www:
    - Type: A
    - Name: www
-   - Value: your-droplet-ip
+   - Value: 146.190.37.164
    - TTL: 3600
 
 Wait for DNS propagation (can take up to 48 hours, usually much faster).
@@ -221,7 +221,7 @@ After SSL is set up, update your Nginx configuration to use the HTTPS server blo
 
 ## Step 9: Verify Deployment
 
-1. Visit `http://your-droplet-ip` or `https://your-domain.com`
+1. Visit `http://146.190.37.164` or `https://your-domain.com`
 2. Check that all pages load correctly
 3. Test the contact form
 4. Verify static files are loading (CSS, images)
@@ -277,7 +277,7 @@ sudo systemctl restart nginx
 
 ```bash
 # SSH into server
-ssh tawimeridian@your-droplet-ip
+ssh tawimeridian@146.190.37.164
 
 # Run deployment script
 cd ~/tawimeridian
