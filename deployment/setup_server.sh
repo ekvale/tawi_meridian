@@ -27,9 +27,15 @@ apt-get upgrade -y
 
 # Install essential packages
 echo -e "${YELLOW}Installing essential packages...${NC}"
+
+# Check Python version available (Ubuntu 24.04 has Python 3.12)
+PYTHON_VERSION=$(python3 --version 2>&1 | grep -oP '\d+\.\d+' | head -1)
+echo -e "${BLUE}Detected Python version: $PYTHON_VERSION${NC}"
+
+# Install Python (use default python3 if specific version not available)
 apt-get install -y \
-    python3.11 \
-    python3.11-venv \
+    python3 \
+    python3-venv \
     python3-pip \
     postgresql \
     postgresql-contrib \
@@ -73,7 +79,7 @@ chmod -R 755 /home/tawimeridian/tawimeridian/staticfiles
 
 # Create Python virtual environment
 echo -e "${YELLOW}Creating Python virtual environment...${NC}"
-sudo -u tawimeridian python3.11 -m venv /home/tawimeridian/venv
+sudo -u tawimeridian python3 -m venv /home/tawimeridian/venv
 sudo -u tawimeridian /home/tawimeridian/venv/bin/pip install --upgrade pip
 echo -e "${GREEN}✓ Virtual environment created${NC}"
 
