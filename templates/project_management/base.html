@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Project Management{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {# Project Management Header #}
+    <div class="bg-gradient-to-r from-tawi-blue to-blue-700 text-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-1">Project Management</h1>
+                    <p class="text-blue-100">Manage projects, opportunities, and operations</p>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="text-right">
+                    <p class="text-sm text-blue-200">Logged in as</p>
+                    <p class="font-semibold">{{ user.get_full_name|default:user.username }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Navigation Tabs #}
+    <div class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <a href="{% url 'project_management:dashboard' %}" 
+                   class="{% if request.resolver_match.url_name == 'dashboard' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Dashboard
+                </a>
+                <a href="{% url 'project_management:projects_list' %}" 
+                   class="{% if request.resolver_match.url_name == 'projects_list' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Projects
+                </a>
+                <a href="{% url 'project_management:opportunities_list' %}" 
+                   class="{% if request.resolver_match.url_name == 'opportunities_list' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Opportunities
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    {# Page Content #}
+    <div class="container mx-auto px-4 py-8">
+        {% block project_management_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -42,6 +42,9 @@ urlpatterns = [
     # Business Plan Tracking
     path('business-plan/', include('business_plan.urls')),
     
+    # Project Management
+    path('project-management/', include('project_management.urls')),
+    
     # Sitemap (uncomment when sitemaps are created)
     # path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     

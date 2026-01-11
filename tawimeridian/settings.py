@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'blog',
     'contact',
     'business_plan',
+    'project_management',
 ]
 
 MIDDLEWARE = [
@@ -260,3 +261,8 @@ LOGGING = {
 
 # Create logs directory if it doesn't exist
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
+# Authentication settings
+LOGIN_URL = '/project-management/login/'
+LOGIN_REDIRECT_URL = '/project-management/'
+LOGOUT_REDIRECT_URL = '/'
