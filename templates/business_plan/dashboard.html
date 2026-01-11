@@ -1,0 +1,309 @@
+{% extends 'business_plan/base.html' %}
+{% load humanize %}
+
+{% block title %}Business Plan Dashboard{% endblock %}
+
+{% block business_plan_content %}
+<div class="space-y-8">
+    {# Stats Overview Cards #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {# Milestones Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Milestones</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ milestone_stats.completed }}/{{ milestone_stats.total }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {% if milestone_stats.total > 0 %}
+                            {% widthratio milestone_stats.completed milestone_stats.total 100 %}% Complete
+                        {% else %}
+                            No milestones
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="text-tawi-blue text-4xl">🎯</div>
+            </div>
+            {% if milestone_stats.overdue > 0 %}
+            <div class="mt-4 text-sm text-red-600 font-medium">
+                ⚠ {{ milestone_stats.overdue }} overdue
+            </div>
+            {% endif %}
+        </div>
+
+        {# Tasks Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Tasks</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ task_stats.completed }}/{{ task_stats.total }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {% if task_stats.total > 0 %}
+                            {% widthratio task_stats.completed task_stats.total 100 %}% Complete
+                        {% else %}
+                            No tasks
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="text-tawi-green text-4xl">✅</div>
+            </div>
+        </div>
+
+        {# Revenue Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">YTD Revenue</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        ${{ ytd_revenue|floatformat:0|intcomma }}
+                    </p>
+                    {% if ytd_target > 0 %}
+                    <p class="text-sm text-gray-500 mt-1">
+                        of ${{ ytd_target|floatformat:0|intcomma }} target
+                        {% if ytd_target > 0 %}
+                        ({% widthratio ytd_revenue ytd_target 100 %}%)
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="text-green-600 text-4xl">💰</div>
+            </div>
+        </div>
+
+        {# Pipeline Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Sales Pipeline</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        ${{ weighted_pipeline|floatformat:0|intcomma }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Weighted value ({{ pipeline_stats.active }} active)
+                    </p>
+                </div>
+                <div class="text-tawi-orange text-4xl">📊</div>
+            </div>
+        </div>
+    </div>
+
+    {# Charts Row #}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {# Revenue Chart #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Monthly Revenue</h2>
+            <canvas id="revenueChart" height="300"></canvas>
+        </div>
+
+        {# Milestones Progress Chart #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Milestones by Status</h2>
+            <canvas id="milestonesChart" height="300"></canvas>
+        </div>
+    </div>
+
+    {# Active Periods and Recent Activity #}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {# Active Milestone Periods #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Active Periods</h2>
+            <div class="space-y-4">
+                {% for period in active_periods %}
+                <div class="border-l-4 border-tawi-blue pl-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">{{ period.name }}</h3>
+                            <p class="text-sm text-gray-600">{{ period.start_date|date:"M d, Y" }} - {{ period.end_date|date:"M d, Y" }}</p>
+                            <div class="mt-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-tawi-blue h-2 rounded-full" style="width: {{ period.progress_percentage }}%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">{{ period.progress_percentage }}% complete</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500">No active periods</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Recent Milestones #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Milestones</h2>
+            <div class="space-y-3">
+                {% for milestone in recent_milestones %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900">{{ milestone.title }}</p>
+                        <p class="text-sm text-gray-500">{{ milestone.period.name }}</p>
+                    </div>
+                    <div>
+                        {% if milestone.status == 'completed' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                        {% elif milestone.status == 'in_progress' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">In Progress</span>
+                        {% elif milestone.is_overdue %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Overdue</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Not Started</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500">No recent milestones</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Upcoming Opportunities #}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Upcoming Opportunities</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunity</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client/Agency</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Win Probability</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expected Close</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for opp in upcoming_opportunities %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ opp.title }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ opp.client_name|default:"—" }}</div>
+                            <div class="text-sm text-gray-500">{{ opp.agency|default:"" }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                                {% if opp.estimated_value %}
+                                    ${{ opp.estimated_value|floatformat:0|intcomma }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ opp.win_probability }}%</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {% if opp.expected_close_date %}
+                                {{ opp.expected_close_date|date:"M d, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ opp.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No upcoming opportunities</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Revenue Chart
+const revenueData = {{ monthly_revenue|safe }};
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+        labels: revenueData.map(d => d.month),
+        datasets: [{
+            label: 'Target',
+            data: revenueData.map(d => d.target),
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.1
+        }, {
+            label: 'Actual',
+            data: revenueData.map(d => d.actual),
+            borderColor: 'rgb(16, 185, 129)',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '$' + value.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Milestones Chart
+const milestonesCtx = document.getElementById('milestonesChart').getContext('2d');
+new Chart(milestonesCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Completed', 'In Progress', 'Not Started', 'At Risk', 'Blocked'],
+        datasets: [{
+            data: [
+                {{ milestone_stats.completed }},
+                {{ milestone_stats.in_progress }},
+                {{ milestone_stats.not_started }},
+                0,
+                0
+            ],
+            backgroundColor: [
+                'rgb(16, 185, 129)',
+                'rgb(59, 130, 246)',
+                'rgb(156, 163, 175)',
+                'rgb(239, 68, 68)',
+                'rgb(107, 114, 128)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

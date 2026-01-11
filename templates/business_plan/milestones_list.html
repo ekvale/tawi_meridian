@@ -1,0 +1,109 @@
+{% extends 'business_plan/base.html' %}
+{% load humanize %}
+
+{% block title %}Milestones{% endblock %}
+
+{% block business_plan_content %}
+<div class="space-y-6">
+    {# Filters #}
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <form method="get" class="flex flex-wrap gap-4">
+            <div>
+                <label for="period" class="block text-sm font-medium text-gray-700 mb-1">Period</label>
+                <select name="period" id="period" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-tawi-blue focus:ring-tawi-blue">
+                    <option value="">All Periods</option>
+                    {% for period in periods %}
+                    <option value="{{ period.id }}" {% if selected_period.id == period.id %}selected{% endif %}>{{ period.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" id="status" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-tawi-blue focus:ring-tawi-blue">
+                    <option value="">All Statuses</option>
+                    <option value="not_started" {% if status_filter == 'not_started' %}selected{% endif %}>Not Started</option>
+                    <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="at_risk" {% if status_filter == 'at_risk' %}selected{% endif %}>At Risk</option>
+                    <option value="blocked" {% if status_filter == 'blocked' %}selected{% endif %}>Blocked</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="px-4 py-2 bg-tawi-blue text-white rounded-md hover:bg-blue-700">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    {# Milestones List #}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-bold text-gray-900">
+                {% if selected_period %}
+                    Milestones: {{ selected_period.name }}
+                {% else %}
+                    All Milestones
+                {% endif %}
+            </h2>
+        </div>
+        <div class="divide-y divide-gray-200">
+            {% for milestone in milestones %}
+            <div class="p-6 hover:bg-gray-50">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3">
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                <a href="{% url 'business_plan:milestone_detail' milestone.pk %}" class="hover:text-tawi-blue">
+                                    {{ milestone.title }}
+                                </a>
+                            </h3>
+                            {% if milestone.is_overdue %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                ⚠ Overdue
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">{{ milestone.period.name }}</p>
+                        {% if milestone.description %}
+                        <p class="text-gray-700 mt-2">{{ milestone.description|truncatewords:30 }}</p>
+                        {% endif %}
+                        <div class="mt-3 flex items-center space-x-4 text-sm text-gray-500">
+                            <span>Due: {{ milestone.target_date|date:"M d, Y" }}</span>
+                            {% if milestone.completed_date %}
+                            <span>Completed: {{ milestone.completed_date|date:"M d, Y" }}</span>
+                            {% endif %}
+                            {% if milestone.assigned_to %}
+                            <span>Assigned to: {{ milestone.assigned_to.get_full_name|default:milestone.assigned_to.username }}</span>
+                            {% endif %}
+                        </div>
+                        {# Progress Bar #}
+                        <div class="mt-3">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-tawi-blue h-2 rounded-full" style="width: {{ milestone.progress_percentage }}%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">{{ milestone.progress_percentage }}% complete ({{ milestone.tasks.count }} tasks)</p>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        {% if milestone.status == 'completed' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">Completed</span>
+                        {% elif milestone.status == 'in_progress' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">In Progress</span>
+                        {% elif milestone.status == 'at_risk' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">At Risk</span>
+                        {% elif milestone.status == 'blocked' %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">Blocked</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">Not Started</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-6 text-center text-gray-500">
+                No milestones found. <a href="/admin/business_plan/milestone/add/" class="text-tawi-blue hover:underline">Add a milestone</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

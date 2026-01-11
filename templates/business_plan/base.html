@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {# Business Plan Header #}
+    <div class="bg-gradient-to-r from-tawi-blue to-blue-700 text-white">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-4xl font-bold mb-2">Business Plan Tracker</h1>
+            <p class="text-blue-100">Track progress, milestones, and key metrics</p>
+        </div>
+    </div>
+
+    {# Navigation Tabs #}
+    <div class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <a href="{% url 'business_plan:dashboard' %}" 
+                   class="{% if request.resolver_match.url_name == 'dashboard' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Dashboard
+                </a>
+                <a href="{% url 'business_plan:milestones_list' %}" 
+                   class="{% if request.resolver_match.url_name == 'milestones_list' or request.resolver_match.url_name == 'milestone_detail' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Milestones
+                </a>
+                <a href="{% url 'business_plan:financial_dashboard' %}" 
+                   class="{% if request.resolver_match.url_name == 'financial_dashboard' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Financial
+                </a>
+                <a href="{% url 'business_plan:pipeline' %}" 
+                   class="{% if request.resolver_match.url_name == 'pipeline' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Sales Pipeline
+                </a>
+                <a href="{% url 'business_plan:certifications' %}" 
+                   class="{% if request.resolver_match.url_name == 'certifications' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Certifications
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    {# Page Content #}
+    <div class="container mx-auto px-4 py-8">
+        {% block business_plan_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
