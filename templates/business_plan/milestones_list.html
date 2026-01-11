@@ -28,6 +28,17 @@
                     <option value="blocked" {% if status_filter == 'blocked' %}selected{% endif %}>Blocked</option>
                 </select>
             </div>
+            <div>
+                <label for="user" class="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
+                <select name="user" id="user" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-tawi-blue focus:ring-tawi-blue">
+                    <option value="">All Users</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}" {% if user_filter == user.id|stringformat:"s" %}selected{% endif %}>
+                        {{ user.get_full_name|default:user.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="flex items-end">
                 <button type="submit" class="px-4 py-2 bg-tawi-blue text-white rounded-md hover:bg-blue-700">Filter</button>
             </div>

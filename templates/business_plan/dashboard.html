@@ -141,6 +141,9 @@
                     <div class="flex-1">
                         <p class="font-medium text-gray-900">{{ milestone.title }}</p>
                         <p class="text-sm text-gray-500">{{ milestone.period.name }}</p>
+                        {% if milestone.assigned_to %}
+                        <p class="text-xs text-gray-400 mt-1">Assigned to: {{ milestone.assigned_to.get_full_name|default:milestone.assigned_to.username }}</p>
+                        {% endif %}
                     </div>
                     <div>
                         {% if milestone.status == 'completed' %}

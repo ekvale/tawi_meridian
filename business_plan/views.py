@@ -111,10 +111,10 @@ def dashboard(request):
         'weighted_pipeline': weighted_pipeline,
         'total_pipeline_value': total_pipeline_value,
         'cert_stats': cert_stats,
-        'recent_milestones': milestones.order_by('-updated_at')[:5],
+        'recent_milestones': milestones.select_related('assigned_to').order_by('-updated_at')[:5],
         'upcoming_opportunities': opportunities.filter(
             expected_close_date__gte=today
-        ).exclude(status__in=['won', 'lost', 'cancelled']).order_by('expected_close_date')[:5],
+        ).exclude(status__in=['won', 'lost', 'cancelled']).select_related('assigned_to').order_by('expected_close_date')[:5],
     }
     
     return render(request, 'business_plan/dashboard.html', context)
@@ -125,25 +125,37 @@ def milestones_list(request):
     """
     List all milestones with filtering
     """
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
     periods = MilestonePeriod.objects.all().order_by('display_order', 'start_date')
     period_id = request.GET.get('period')
     
     if period_id:
-        milestones = Milestone.objects.filter(period_id=period_id).order_by('display_order', 'target_date')
+        milestones = Milestone.objects.filter(period_id=period_id).select_related('assigned_to').order_by('display_order', 'target_date')
         selected_period = get_object_or_404(MilestonePeriod, pk=period_id)
     else:
-        milestones = Milestone.objects.all().order_by('period', 'display_order', 'target_date')
+        milestones = Milestone.objects.all().select_related('assigned_to').order_by('period', 'display_order', 'target_date')
         selected_period = None
     
     status_filter = request.GET.get('status')
     if status_filter:
         milestones = milestones.filter(status=status_filter)
     
+    user_filter = request.GET.get('user')
+    if user_filter:
+        milestones = milestones.filter(assigned_to_id=user_filter)
+    
+    # Get all users who have milestones assigned (for filter dropdown)
+    users_with_milestones = User.objects.filter(milestones__isnull=False).distinct().order_by('first_name', 'last_name', 'username')
+    
     context = {
         'periods': periods,
         'milestones': milestones,
         'selected_period': selected_period,
         'status_filter': status_filter,
+        'user_filter': user_filter,
+        'users': users_with_milestones,
     }
     
     return render(request, 'business_plan/milestones_list.html', context)
@@ -154,8 +166,8 @@ def milestone_detail(request, pk):
     """
     Detail view for a milestone with tasks
     """
-    milestone = get_object_or_404(Milestone, pk=pk)
-    tasks = milestone.tasks.all().order_by('display_order', 'due_date')
+    milestone = get_object_or_404(Milestone.objects.select_related('assigned_to', 'period'), pk=pk)
+    tasks = milestone.tasks.select_related('assigned_to').all().order_by('display_order', 'due_date')
     
     context = {
         'milestone': milestone,
@@ -240,16 +252,26 @@ def pipeline_view(request):
     """
     Sales pipeline view
     """
-    status_filter = request.GET.get('status')
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
     
-    opportunities = Opportunity.objects.all()
+    status_filter = request.GET.get('status')
+    user_filter = request.GET.get('user')
+    
+    opportunities = Opportunity.objects.select_related('assigned_to').all()
     
     if status_filter:
         opportunities = opportunities.filter(status=status_filter)
     else:
         opportunities = opportunities.exclude(status__in=['won', 'lost', 'cancelled'])
     
+    if user_filter:
+        opportunities = opportunities.filter(assigned_to_id=user_filter)
+    
     opportunities = opportunities.order_by('-priority', '-expected_close_date')
+    
+    # Get all users who have opportunities assigned (for filter dropdown)
+    users_with_opportunities = User.objects.filter(opportunities__isnull=False).distinct().order_by('first_name', 'last_name', 'username')
     
     # Statistics
     stats = {
@@ -260,7 +282,10 @@ def pipeline_view(request):
     
     # Group by status
     by_status = {}
-    for opp in Opportunity.objects.all():
+    all_opps = Opportunity.objects.all()
+    if user_filter:
+        all_opps = all_opps.filter(assigned_to_id=user_filter)
+    for opp in all_opps:
         status = opp.get_status_display()
         if status not in by_status:
             by_status[status] = {'count': 0, 'value': 0}
@@ -273,6 +298,8 @@ def pipeline_view(request):
         'stats': stats,
         'by_status': by_status,
         'status_filter': status_filter,
+        'user_filter': user_filter,
+        'users': users_with_opportunities,
     }
     
     return render(request, 'business_plan/pipeline.html', context)
