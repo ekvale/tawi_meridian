@@ -29,6 +29,9 @@ def dashboard(request):
         'total': milestones.count(),
         'completed': milestones.filter(status='completed').count(),
         'in_progress': milestones.filter(status='in_progress').count(),
+        'not_started': milestones.filter(status='not_started').count(),
+        'at_risk': milestones.filter(status='at_risk').count(),
+        'blocked': milestones.filter(status='blocked').count(),
         'overdue': sum(1 for m in milestones if m.is_overdue),
     }
     
@@ -99,6 +102,40 @@ def dashboard(request):
         'pending': certifications.filter(status__in=['not_started', 'application_prep', 'application_submitted', 'under_review']).count(),
     }
     
+    # Calculate completion percentages
+    milestone_completion_pct = (milestone_stats['completed'] / milestone_stats['total'] * 100) if milestone_stats['total'] > 0 else 0
+    task_completion_pct = (task_stats['completed'] / task_stats['total'] * 100) if task_stats['total'] > 0 else 0
+    revenue_completion_pct = (ytd_revenue / ytd_target * 100) if ytd_target > 0 else 0
+    
+    # Prepare Gantt chart data
+    gantt_data = []
+    for milestone in milestones.select_related('period', 'assigned_to').order_by('period', 'display_order', 'target_date'):
+        start_date = milestone.period.start_date if milestone.period else milestone.target_date - timedelta(days=30)
+        end_date = milestone.completed_date if milestone.status == 'completed' else milestone.target_date
+        
+        # Calculate progress percentage
+        progress = milestone.progress_percentage
+        
+        gantt_data.append({
+            'id': str(milestone.id),
+            'name': milestone.title,
+            'start': start_date.strftime('%Y-%m-%d'),
+            'end': end_date.strftime('%Y-%m-%d'),
+            'progress': progress,
+            'custom_class': milestone.status,
+            'period': milestone.period.name if milestone.period else '',
+            'assignee': milestone.assigned_to.get_full_name() if milestone.assigned_to else 'Unassigned',
+        })
+    
+    # Overall KPIs
+    overall_stats = {
+        'milestone_completion_pct': round(milestone_completion_pct, 1),
+        'task_completion_pct': round(task_completion_pct, 1),
+        'revenue_completion_pct': round(revenue_completion_pct, 1),
+        'on_time_milestones': milestone_stats['total'] - milestone_stats['overdue'] - milestone_stats['completed'],
+        'on_time_pct': round(((milestone_stats['total'] - milestone_stats['overdue'] - milestone_stats['completed']) / milestone_stats['total'] * 100) if milestone_stats['total'] > 0 else 0, 1),
+    }
+    
     context = {
         'active_periods': active_periods,
         'milestone_stats': milestone_stats,
@@ -115,6 +152,9 @@ def dashboard(request):
         'upcoming_opportunities': opportunities.filter(
             expected_close_date__gte=today
         ).exclude(status__in=['won', 'lost', 'cancelled']).select_related('assigned_to').order_by('expected_close_date')[:5],
+        'gantt_data': mark_safe(json.dumps(gantt_data)),
+        'overall_stats': overall_stats,
+        'milestones': milestones.select_related('period', 'assigned_to').order_by('period', 'display_order', 'target_date')[:20],  # For Gantt chart
     }
     
     return render(request, 'business_plan/dashboard.html', context)
