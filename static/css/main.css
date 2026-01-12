@@ -1,0 +1,295 @@
+/*
+ * Tawi Meridian - Main Stylesheet
+ * 
+ * This file contains custom CSS to complement Tailwind CSS.
+ * Most styling is handled by Tailwind utility classes, but
+ * some custom styles are defined here for consistency.
+ */
+
+/* Base Styles */
+:root {
+    --tawi-blue: #1e3a8a;
+    --tawi-orange: #f97316;
+    --tawi-green: #059669;
+    --tawi-light: #f8fafc;
+}
+
+/* Logo Styles */
+.logo {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.navbar-logo {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.hero-logo {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.about-logo-circle {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Typography */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    color: #1f2937;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', 'Inter', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Links */
+a {
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--tawi-orange);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #ea580c;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--tawi-blue);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #1e40af;
+    color: white;
+}
+
+.btn-outline {
+    border: 2px solid var(--tawi-blue);
+    color: var(--tawi-blue);
+    background-color: transparent;
+}
+
+.btn-outline:hover {
+    background-color: var(--tawi-blue);
+    color: white;
+}
+
+/* Forms */
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #1f2937;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--tawi-blue);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Alerts / Messages */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+}
+
+.alert-success {
+    color: #065f46;
+    background-color: #d1fae5;
+    border-color: #6ee7b7;
+}
+
+.alert-error,
+.alert-danger {
+    color: #991b1b;
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+}
+
+.alert-warning {
+    color: #92400e;
+    background-color: #fef3c7;
+    border-color: #fcd34d;
+}
+
+.alert-info {
+    color: #1e40af;
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+/* Cards */
+.card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid var(--tawi-blue);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.text-tawi-blue { color: var(--tawi-blue); }
+.text-tawi-orange { color: var(--tawi-orange); }
+.text-tawi-green { color: var(--tawi-green); }
+
+.bg-tawi-blue { background-color: var(--tawi-blue); }
+.bg-tawi-orange { background-color: var(--tawi-orange); }
+.bg-tawi-green { background-color: var(--tawi-green); }
+.bg-tawi-light { background-color: var(--tawi-light); }
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus styles for accessibility */
+*:focus {
+    outline: 2px solid var(--tawi-blue);
+    outline-offset: 2px;
+}
+
+button:focus,
+a:focus {
+    outline: 2px solid var(--tawi-blue);
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Responsive Images */
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Selection Color */
+::selection {
+    background-color: var(--tawi-orange);
+    color: white;
+}
+
+/* Scrollbar Styling (Webkit browsers) */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--tawi-blue);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1e40af;
+}
