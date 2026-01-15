@@ -31,6 +31,14 @@
                    class="{% if request.resolver_match.url_name == 'dashboard' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     Dashboard
                 </a>
+                <a href="{% url 'project_management:organizations_list' %}" 
+                   class="{% if 'organization' in request.resolver_match.url_name %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Organizations
+                </a>
+                <a href="{% url 'project_management:contacts_list' %}" 
+                   class="{% if 'contact' in request.resolver_match.url_name and request.resolver_match.url_name != 'contact_detail' or request.resolver_match.url_name == 'contacts_list' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Contacts
+                </a>
                 <a href="{% url 'project_management:projects_list' %}" 
                    class="{% if request.resolver_match.url_name == 'projects_list' %}border-tawi-blue text-tawi-blue{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     Projects
