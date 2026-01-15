@@ -1,0 +1,175 @@
+{% extends 'project_management/base.html' %}
+{% load humanize %}
+
+{% block title %}{{ contact.get_full_name }}{% endblock %}
+
+{% block pm_content %}
+<div class="space-y-6">
+    {# Header #}
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">{{ contact.get_full_name }}</h1>
+            <p class="text-gray-600 mt-1">
+                <a href="{% url 'project_management:organization_detail' contact.organization.pk %}" class="text-blue-600 hover:text-blue-800">
+                    {{ contact.organization.name }}
+                </a>
+                {% if contact.title %} • {{ contact.title }}{% endif %}
+            </p>
+        </div>
+        <div class="flex space-x-2">
+            <a href="/admin/project_management/contact/{{ contact.pk }}/change/" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Edit
+            </a>
+            <a href="{% url 'project_management:contacts_list' %}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    {# Contact Information Cards #}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {# Basic Information #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+            <div class="space-y-3 text-sm">
+                {% if contact.email %}
+                <div>
+                    <span class="text-gray-500">Email:</span>
+                    <a href="mailto:{{ contact.email }}" class="text-blue-600 hover:text-blue-800 ml-2">{{ contact.email }}</a>
+                </div>
+                {% endif %}
+                {% if contact.phone %}
+                <div>
+                    <span class="text-gray-500">Phone:</span>
+                    <a href="tel:{{ contact.phone }}" class="text-blue-600 hover:text-blue-800 ml-2">{{ contact.phone }}</a>
+                </div>
+                {% endif %}
+                {% if contact.mobile %}
+                <div>
+                    <span class="text-gray-500">Mobile:</span>
+                    <a href="tel:{{ contact.mobile }}" class="text-blue-600 hover:text-blue-800 ml-2">{{ contact.mobile }}</a>
+                </div>
+                {% endif %}
+                {% if contact.office_location %}
+                <div>
+                    <span class="text-gray-500">Office Location:</span>
+                    <span class="text-gray-900 ml-2">{{ contact.office_location }}</span>
+                </div>
+                {% endif %}
+                {% if contact.role %}
+                <div>
+                    <span class="text-gray-500">Role:</span>
+                    <span class="text-gray-900 ml-2">{{ contact.get_role_display }}</span>
+                </div>
+                {% endif %}
+                <div>
+                    <span class="text-gray-500">Primary Contact:</span>
+                    <span class="text-gray-900 ml-2">{% if contact.is_primary %}Yes{% else %}No{% endif %}</span>
+                </div>
+                {% if contact.is_active %}
+                <div>
+                    <span class="text-gray-500">Status:</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-2">Active</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Organization Information #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Organization</h3>
+            <div class="space-y-3">
+                <div>
+                    <a href="{% url 'project_management:organization_detail' contact.organization.pk %}" class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                        {{ contact.organization.name }}
+                    </a>
+                </div>
+                {% if contact.organization.type %}
+                <p class="text-sm text-gray-600">{{ contact.organization.type.name }}</p>
+                {% endif %}
+                {% if contact.organization.location %}
+                <p class="text-sm text-gray-600">{{ contact.organization.location }}</p>
+                {% endif %}
+                {% if contact.organization.website %}
+                <div>
+                    <a href="{{ contact.organization.website }}" target="_blank" class="text-sm text-blue-600 hover:text-blue-800" rel="noopener noreferrer">
+                        {{ contact.organization.website }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Notes #}
+    {% if contact.notes or contact.key_info %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Notes</h2>
+        <div class="space-y-4">
+            {% if contact.notes %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-600 mb-2">General Notes</h3>
+                <p class="text-gray-700 whitespace-pre-line">{{ contact.notes }}</p>
+            </div>
+            {% endif %}
+            {% if contact.key_info %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-600 mb-2">Key Information</h3>
+                <p class="text-gray-700 whitespace-pre-line">{{ contact.key_info }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Interactions Section #}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-900">Interactions</h2>
+            <a href="/admin/project_management/contactinteraction/add/?contact={{ contact.pk }}&organization={{ contact.organization.pk }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                + Log Interaction
+            </a>
+        </div>
+        {% if interactions %}
+        <div class="space-y-4">
+            {% for interaction in interactions %}
+            <div class="border-l-4 border-blue-500 pl-4 py-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-medium text-gray-400 uppercase">{{ interaction.get_interaction_type_display }}</span>
+                            <span class="text-xs text-gray-400">{{ interaction.interaction_date|date:"M d, Y g:i A" }}</span>
+                            {% if interaction.organization %}
+                            <a href="{% url 'project_management:organization_detail' interaction.organization.pk %}" class="text-xs text-blue-600 hover:text-blue-800">
+                                {{ interaction.organization.name }}
+                            </a>
+                            {% endif %}
+                            {% if interaction.created_by %}
+                            <span class="text-xs text-gray-400">by {{ interaction.created_by.get_full_name|default:interaction.created_by.username }}</span>
+                            {% endif %}
+                        </div>
+                        {% if interaction.subject %}
+                        <p class="font-medium text-gray-900 mt-1">{{ interaction.subject }}</p>
+                        {% endif %}
+                        {% if interaction.notes %}
+                        <p class="text-sm text-gray-700 mt-2 whitespace-pre-line">{{ interaction.notes }}</p>
+                        {% endif %}
+                        {% if interaction.next_action %}
+                        <div class="mt-2 p-2 bg-blue-50 rounded">
+                            <p class="text-sm font-medium text-blue-900">Next Action: {{ interaction.next_action }}</p>
+                            {% if interaction.next_action_date %}
+                            <p class="text-xs text-blue-700">Due: {{ interaction.next_action_date|date:"M d, Y" }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-4">No interactions yet. <a href="/admin/project_management/contactinteraction/add/?contact={{ contact.pk }}&organization={{ contact.organization.pk }}" class="text-blue-600 hover:text-blue-800">Log one</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

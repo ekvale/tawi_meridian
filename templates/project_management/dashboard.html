@@ -1,21 +1,183 @@
 {% extends 'project_management/base.html' %}
+{% load humanize %}
 
-{% block title %}Dashboard - Project Management{% endblock %}
+{% block title %}Project Management Dashboard{% endblock %}
 
-{% block project_management_content %}
-<div class="space-y-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Welcome to Project Management</h2>
-        <p class="text-gray-600">
-            This is the project management dashboard. Features coming soon:
-        </p>
-        <ul class="list-disc list-inside mt-4 space-y-2 text-gray-600">
-            <li>Project management and task tracking</li>
-            <li>Opportunity and proposal management</li>
-            <li>Time tracking and timesheets</li>
-            <li>Client relationship management</li>
-            <li>Financial tracking and reporting</li>
-        </ul>
+{% block pm_content %}
+<div class="space-y-8">
+    {# Stats Overview Cards #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {# Organizations Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Organizations</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ total_organizations }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {{ active_organizations }} active
+                    </p>
+                </div>
+                <div class="text-blue-600 text-4xl">🏢</div>
+            </div>
+        </div>
+
+        {# Contacts Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Contacts</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ total_contacts }}
+                    </p>
+                </div>
+                <div class="text-green-600 text-4xl">👥</div>
+            </div>
+        </div>
+
+        {# Recent Interactions Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Recent Interactions</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ recent_interactions|length }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Last 10 interactions
+                    </p>
+                </div>
+                <div class="text-orange-600 text-4xl">📞</div>
+            </div>
+        </div>
+
+        {# Follow-ups Card #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Upcoming Follow-ups</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        {{ upcoming_follow_ups|length }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Next 30 days
+                    </p>
+                </div>
+                <div class="text-purple-600 text-4xl">📅</div>
+            </div>
+        </div>
     </div>
+
+    {# Recent Activity Section #}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {# Recent Organizations #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Recent Organizations</h2>
+                <a href="{% url 'project_management:organizations_list' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    View All →
+                </a>
+            </div>
+            <div class="space-y-3">
+                {% for org in recent_organizations %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100">
+                    <div class="flex-1">
+                        <a href="{% url 'project_management:organization_detail' org.pk %}" class="font-medium text-gray-900 hover:text-blue-600">
+                            {{ org.name }}
+                        </a>
+                        <p class="text-sm text-gray-500">
+                            {% if org.type %}{{ org.type.name }}{% endif %}
+                            {% if org.location %} • {{ org.location }}{% endif %}
+                        </p>
+                        {% if org.contact_count %}
+                        <p class="text-xs text-gray-400 mt-1">{{ org.contact_count }} contact{{ org.contact_count|pluralize }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if org.priority == 'critical' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Critical</span>
+                        {% elif org.priority == 'high' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">High</span>
+                        {% elif org.priority == 'medium' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Medium</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Low</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center py-4">No organizations yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Recent Interactions #}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Recent Interactions</h2>
+            </div>
+            <div class="space-y-3">
+                {% for interaction in recent_interactions %}
+                <div class="flex items-start justify-between p-3 bg-gray-50 rounded">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-medium text-gray-400 uppercase">{{ interaction.get_interaction_type_display }}</span>
+                            <span class="text-xs text-gray-400">{{ interaction.interaction_date|date:"M d, Y" }}</span>
+                        </div>
+                        <p class="font-medium text-gray-900 mt-1">
+                            <a href="{% url 'project_management:organization_detail' interaction.organization.pk %}" class="hover:text-blue-600">
+                                {{ interaction.organization.name }}
+                            </a>
+                        </p>
+                        {% if interaction.contact %}
+                        <p class="text-sm text-gray-600">{{ interaction.contact.get_full_name }}</p>
+                        {% endif %}
+                        {% if interaction.subject %}
+                        <p class="text-sm text-gray-700 mt-1">{{ interaction.subject }}</p>
+                        {% endif %}
+                        {% if interaction.next_action %}
+                        <p class="text-xs text-blue-600 mt-1">→ {{ interaction.next_action }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center py-4">No interactions yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Upcoming Follow-ups #}
+    {% if upcoming_follow_ups %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Upcoming Follow-ups</h2>
+        <div class="space-y-3">
+            {% for follow_up in upcoming_follow_ups %}
+            <div class="flex items-center justify-between p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                <div class="flex-1">
+                    <p class="font-medium text-gray-900">
+                        <a href="{% url 'project_management:organization_detail' follow_up.organization.pk %}" class="hover:text-blue-600">
+                            {{ follow_up.organization.name }}
+                        </a>
+                    </p>
+                    <p class="text-sm text-gray-700 mt-1">{{ follow_up.next_action }}</p>
+                    {% if follow_up.contact %}
+                    <p class="text-xs text-gray-600 mt-1">Contact: {{ follow_up.contact.get_full_name }}</p>
+                    {% endif %}
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-medium text-blue-600">
+                        {{ follow_up.next_action_date|date:"M d, Y" }}
+                    </p>
+                    {% if follow_up.next_action_date == today %}
+                    <p class="text-xs text-red-600 font-medium">Due Today</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
