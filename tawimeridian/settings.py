@@ -162,10 +162,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # CSRF settings
+# IMPORTANT: In production, set CSRF_TRUSTED_ORIGINS in .env file
+# Example: CSRF_TRUSTED_ORIGINS=https://tawimeridian.com,https://www.tawimeridian.com
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
-# Allow insecure referer when moving from HTTP to HTTPS (useful during migration)
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = False  # Django admin needs this
 
 # Security settings (enable in production)
 if not DEBUG:
