@@ -105,7 +105,7 @@
                             {% if org.location %}{{ org.location }}{% else %}—{% endif %}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ org.contact_count }} contact{{ org.contact_count|pluralize }}
+                            {{ org.num_contacts }} contact{{ org.num_contacts|pluralize }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             {% if org.priority == 'critical' %}

@@ -89,7 +89,7 @@ def dashboard(request):
 def organizations_list(request):
     """List all organizations with filtering"""
     organizations = Organization.objects.select_related('type', 'category', 'assigned_to').annotate(
-        contact_count=Count('contacts')
+        num_contacts=Count('contacts')
     ).all()
     
     # Filters
