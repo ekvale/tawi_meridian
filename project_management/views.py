@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q, Count, Max
 from django.core.paginator import Paginator
 from django.utils import timezone
+from datetime import timedelta
 from django.contrib import messages
 from .models import Organization, Contact, ContactInteraction, OrganizationType, ContactCategory
 
