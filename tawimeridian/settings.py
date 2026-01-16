@@ -181,6 +181,9 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    # When behind a proxy (Nginx), tell Django to trust X-Forwarded-Proto header
+    # This fixes CSRF referer checking when using HTTPS through Nginx
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Content Security Policy
 CONTENT_SECURITY_POLICY = {
