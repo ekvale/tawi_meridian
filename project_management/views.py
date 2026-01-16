@@ -60,6 +60,7 @@ def dashboard(request):
     today = timezone.now().date()
     next_month = today + timedelta(days=30)
     upcoming_follow_ups = ContactInteraction.objects.filter(
+        next_action_date__isnull=False,
         next_action_date__gte=today,
         next_action_date__lte=next_month
     ).exclude(next_action='').select_related('organization', 'contact').order_by('next_action_date')[:10]
@@ -77,6 +78,7 @@ def dashboard(request):
         'organizations_by_priority': organizations_by_priority,
         'upcoming_follow_ups': upcoming_follow_ups,
         'recent_organizations': recent_organizations,
+        'today': today,  # Add today to context for template comparison
     }
     
     return render(request, 'project_management/dashboard.html', context)
