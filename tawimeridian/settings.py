@@ -164,7 +164,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # CSRF settings
 # IMPORTANT: In production, set CSRF_TRUSTED_ORIGINS in .env file
 # Example: CSRF_TRUSTED_ORIGINS=https://tawimeridian.com,https://www.tawimeridian.com
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+# django-environ parses comma-separated values as a list
+csrf_origins_str = env('CSRF_TRUSTED_ORIGINS', default='')
+if csrf_origins_str:
+    # Parse comma-separated list, strip whitespace
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins_str.split(',') if origin.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = []
 # Disable referer checking if behind a proxy (Nginx) that may not preserve referer
 # This is safe when CSRF_TRUSTED_ORIGINS is properly configured
 CSRF_COOKIE_SAMESITE = 'Lax'
