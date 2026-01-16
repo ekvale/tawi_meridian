@@ -132,7 +132,9 @@ def organizations_list(request):
     contact_categories = ContactCategory.objects.all().order_by('display_order', 'name')
     from django.contrib.auth import get_user_model
     User = get_user_model()
-    assigned_users = User.objects.filter(assigned_organizations__isnull=False).distinct().order_by('first_name', 'last_name', 'username')
+    # Get users who have assigned organizations
+    assigned_user_ids = Organization.objects.filter(assigned_to__isnull=False).values_list('assigned_to', flat=True).distinct()
+    assigned_users = User.objects.filter(id__in=assigned_user_ids).order_by('first_name', 'last_name', 'username')
     
     context = {
         'page_obj': page_obj,
