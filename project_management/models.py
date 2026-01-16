@@ -171,7 +171,21 @@ class Contact(models.Model):
         verbose_name = 'Contact'
         verbose_name_plural = 'Contacts'
         ordering = ['organization', 'is_primary', 'last_name', 'first_name']
-        unique_together = [['organization', 'email']]  # Prevent duplicate emails per organization
+        # Only enforce unique email when email is not empty
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'email'],
+                condition=models.Q(email__isnull=False) & ~models.Q(email=''),
+                name='unique_contact_email_per_org'
+            ),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'email'],
+                condition=models.Q(email__isnull=False) & ~models.Q(email=''),
+                name='unique_contact_email_per_org'
+            ),
+        ]
     
     def __str__(self):
         return f"{self.get_full_name()} - {self.organization.name}"

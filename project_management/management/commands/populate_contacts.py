@@ -6,6 +6,7 @@ Usage: python manage.py populate_contacts
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from project_management.models import (
     Organization, Contact, OrganizationType, ContactCategory
 )
@@ -136,13 +137,13 @@ class Command(BaseCommand):
             organization=mwingi,
             first_name='Sammy',
             last_name='Mwanthi Kibwana',
-            defaults={'title': 'Chairman', 'role': 'chairman', 'is_primary': True}
+            defaults={'title': 'Chairman', 'role': 'chairman', 'is_primary': True, 'email': ''}
         )
         Contact.objects.get_or_create(
             organization=mwingi,
             first_name='Christine',
             last_name='Musyoka',
-            defaults={'title': 'Supervisor', 'role': 'supervisor'}
+            defaults={'title': 'Supervisor', 'role': 'supervisor', 'email': ''}
         )
 
         # Mbitini Ward Farmers Sacco
@@ -163,6 +164,7 @@ class Command(BaseCommand):
             organization=mbitini,
             first_name='Kwithya',
             last_name='',
+            email='',
             defaults={'title': 'Chairperson (also Secretary of Mbitini Horticulture Cooperative Society Limited)', 'role': 'chairman', 'is_primary': True}
         )
 
@@ -204,6 +206,7 @@ class Command(BaseCommand):
             organization=kepc,
             first_name='Crack',
             last_name='Munyao',
+            email='',
             defaults={'title': 'Managing Director', 'role': 'director', 'is_primary': True}
         )
 
@@ -239,12 +242,14 @@ class Command(BaseCommand):
             organization=kitui_trade,
             first_name='Jonah',
             last_name='Mwinzi',
+            email='',
             defaults={'title': 'County Executive Committee (CEC) Member', 'role': 'officer', 'is_primary': True}
         )
         Contact.objects.get_or_create(
             organization=kitui_trade,
             first_name='Robert',
             last_name='Ngong\'a',
+            email='',
             defaults={'title': 'Director', 'role': 'director'}
         )
 
@@ -265,6 +270,7 @@ class Command(BaseCommand):
             organization=kitui_ag,
             first_name='Redemptory',
             last_name='Mary',
+            email='',
             defaults={'title': 'Director of Special Programs (supported Mwingi facility)', 'role': 'director', 'is_primary': True}
         )
 
@@ -285,6 +291,7 @@ class Command(BaseCommand):
             organization=sunsweet,
             first_name='Simon',
             last_name='Musyoka',
+            email='',
             defaults={'title': 'Owner/Founder', 'role': 'director', 'is_primary': True}
         )
 
@@ -308,6 +315,7 @@ class Command(BaseCommand):
             organization=jkuat,
             first_name='Evelyn',
             last_name='Okoth',
+            email='',
             defaults={'title': 'Dr., Lead researcher, Kitui mango IPM project', 'role': 'researcher', 'is_primary': True}
         )
 
@@ -328,12 +336,14 @@ class Command(BaseCommand):
             organization=umes,
             first_name='Stephen',
             last_name='Tubene',
+            email='',
             defaults={'title': 'Prof., Co-investigator on Kitui mango project', 'role': 'researcher', 'is_primary': True}
         )
         Contact.objects.get_or_create(
             organization=umes,
             first_name='Caleb',
             last_name='Nindo',
+            email='',
             defaults={'title': 'Prof., Co-investigator on Kitui mango project, Food processing expertise', 'role': 'researcher'}
         )
 
@@ -354,12 +364,14 @@ class Command(BaseCommand):
             organization=ucdavis,
             first_name='Michael',
             last_name='Reid',
+            email='',
             defaults={'title': 'Dr., Lead designer - Chimney solar dryer', 'role': 'researcher', 'is_primary': True}
         )
         Contact.objects.get_or_create(
             organization=ucdavis,
             first_name='James',
             last_name='Thompson',
+            email='',
             defaults={'title': 'Dr., Lead designer - Chimney solar dryer', 'role': 'researcher'}
         )
 
@@ -395,6 +407,7 @@ class Command(BaseCommand):
             organization=makerere,
             first_name='Simon Savio',
             last_name='Kizito',
+            email='',
             defaults={'title': 'Dr., Designer of hybrid solar dryer', 'role': 'researcher', 'is_primary': True}
         )
 
