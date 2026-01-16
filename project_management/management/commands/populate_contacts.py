@@ -117,6 +117,42 @@ class Command(BaseCommand):
         primary_funder, _ = ContactCategory.objects.get_or_create(name='PRIMARY FUNDER')
         proven_funder, _ = ContactCategory.objects.get_or_create(name='PROVEN FUNDER')
 
+        # Helper function to safely create contacts with email handling
+        def create_contact(org, first_name, last_name, email='', **defaults):
+            """Create contact, handling empty emails gracefully"""
+            try:
+                if email:
+                    contact, created = Contact.objects.get_or_create(
+                        organization=org,
+                        email=email,
+                        defaults={'first_name': first_name, 'last_name': last_name, **defaults}
+                    )
+                else:
+                    # For contacts without email, use first_name + last_name as lookup
+                    contact, created = Contact.objects.get_or_create(
+                        organization=org,
+                        first_name=first_name,
+                        last_name=last_name,
+                        email='',
+                        defaults=defaults
+                    )
+                if created:
+                    self.stdout.write(f'  Created contact: {contact.get_full_name()}')
+                return contact
+            except IntegrityError:
+                # Contact already exists, try to get it
+                if email:
+                    contact = Contact.objects.filter(organization=org, email=email).first()
+                else:
+                    contact = Contact.objects.filter(organization=org, first_name=first_name, last_name=last_name, email='').first()
+                if contact:
+                    # Update existing contact
+                    for key, value in defaults.items():
+                        setattr(contact, key, value)
+                    contact.save()
+                    self.stdout.write(f'  Updated contact: {contact.get_full_name()}')
+                return contact
+        
         # 1. KITUI COUNTY - LOCAL PARTNERS & COOPERATIVES
         
         # Mwingi Horticulture Farmers' Cooperative Society
@@ -601,5 +637,361 @@ class Command(BaseCommand):
             }
         )
 
-        self.stdout.write(self.style.SUCCESS(f'Created {Organization.objects.count()} organizations'))
-        self.stdout.write(self.style.SUCCESS(f'Created {Contact.objects.count()} contacts'))
+        # 4. CGIAR RESEARCH INSTITUTIONS - TOP PRIORITY
+        
+        # Alliance of Bioversity International and CIAT - Kenya
+        cgiar_alliance, _ = Organization.objects.get_or_create(
+            name='Alliance of Bioversity International and CIAT - Kenya',
+            defaults={
+                'type': research_type,
+                'category': top_priority,
+                'location': 'Africa Hub, Nairobi, Kenya',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'CGIAR research institution. Co-authored comprehensive Makueni mango value chain study. Active in Eastern Kenya (adjacent to Kitui). Agroecological approach aligns with hybrid system.',
+                'key_notes': 'Lead contact for entire Makueni study. Gateway to entire CGIAR network. Active in Eastern Kenya.',
+                'contact_strategy': 'Email subject: "Solar-Biomass Mango Processing in Kitui County - Research Collaboration". Mention: Read Makueni study, working on adjacent Kitui County. Request: Meeting to discuss collaboration, potential joint research. Offer: Partnership on expanding study to Kitui, data from your pilot.',
+            }
+        )
+        create_contact(cgiar_alliance, 'Christine G. K.', 'Chege', email='c.chege@cgiar.org', title='Researcher, Co-author, listed as contact person', role='researcher', is_primary=True, key_info='Lead contact for entire Makueni study. Expertise: Mango value chain analysis, agroecology, Eastern Kenya. Priority: TIER 1 - Contact this week.')
+        create_contact(cgiar_alliance, 'Kevin', 'Onyango', email='k.onyango@cgiar.org', title='Lead Researcher, Principal Investigator', role='researcher', key_info='Lead author, conducted all field work in Makueni. Deep knowledge of mango value chain actors. Established relationships with cooperatives, county government. Priority: TIER 1 - Contact this week.')
+        create_contact(cgiar_alliance, 'Peter', 'Bolo', email='p.bolo@cgiar.org', title='Researcher, Co-author', role='researcher', key_info='Expertise: Agroecology, value chains. Priority: TIER 2')
+        create_contact(cgiar_alliance, 'Rosina', 'Wanyama', email='r.wanyama@cgiar.org', title='Researcher, Co-author', role='researcher', key_info='Expertise: Value chains, agroecology. Priority: TIER 2')
+
+        # CGIAR Initiative - Transformational Agroecology
+        cgiar_agroecology, _ = Organization.objects.get_or_create(
+            name='CGIAR Initiative - Transformational Agroecology (Work Package 3 - Kenya Team)',
+            defaults={
+                'type': research_type,
+                'category': top_priority,
+                'location': 'Multiple CGIAR centers, Kenya coordination',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Multi-year, multi-million dollar initiative. Focus on scaling agroecological innovations. Your hybrid solar-biomass = agroecological innovation. Already working in Kenya (Makueni ALL).',
+                'website': 'https://www.cgiar.org/initiative/agroecology/',
+                'contact_strategy': 'Through Christine Chege (she\'s on Kenya team). Position your project as agroecological innovation. Request inclusion in initiative or partnership.',
+            }
+        )
+
+        # International Institute of Tropical Agriculture (IITA) - Kenya
+        iita, _ = Organization.objects.get_or_create(
+            name='International Institute of Tropical Agriculture (IITA) - East Africa Hub',
+            defaults={
+                'type': research_type,
+                'location': 'East Africa Hub, Nairobi, Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'IITA has global reach and funding access. Tropical agriculture expertise. East Africa regional focus.',
+                'contact_strategy': 'Reach out after connecting with Christine/Kevin. Request technical consultation on mango processing. Explore IITA funding opportunities.',
+            }
+        )
+        create_contact(iita, 'Aurillia', 'Ndiwa', email='a.ndiwa@cgiar.org', title='Researcher', role='researcher', is_primary=True, key_info='Expertise: Tropical agriculture, horticulture, value chains. Priority: TIER 2')
+
+        # 5. MAKUENI COUNTY GOVERNMENT - MODEL & LESSONS
+        
+        # Makueni County Fruit Development and Marketing Authority (MCFDMA)
+        mcfdma, _ = Organization.objects.get_or_create(
+            name='Makueni County Fruit Development and Marketing Authority (MCFDMA)',
+            defaults={
+                'type': govt_type,
+                'category': top_priority,
+                'location': 'Kalamba processing plant, Makueni County',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Established 2017 (MCFDMA Act, 2017). EXACT MODEL you need to study. County government-owned processing facility. Cooperative supply model. Capacity: 5 tons/hour (40 tons/day, 800 tons/month). Current processing: 1,000-3,000 tons/season (40% utilization).',
+                'key_notes': 'Purchase price: KSh 18-21/kg. Products: Mango purée (planning juice, bottled water). Lessons learned (what worked, what didn\'t). Potential customer for dried mango.',
+                'contact_strategy': 'Request through Makueni County Agriculture Department or through Kevin Onyango (CGIAR). Schedule facility tour. Interview: Plant Manager, Operations Manager, Procurement Manager, Quality Control Manager. Priority: TIER 1 - Schedule site visit.',
+            }
+        )
+
+        # Makueni County Department of Agriculture
+        makueni_ag, _ = Organization.objects.get_or_create(
+            name='Makueni County Government - Department of Agriculture',
+            defaults={
+                'type': govt_type,
+                'location': 'Makueni County',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Understand county support to mango sector. Learn PPP model (MCFDMA). Extension services coordination. Farmer cooperative support.',
+                'contact_strategy': 'Schedule meeting during Kalamba visit. Ask Kevin Onyango for introduction. Request briefing on county mango strategy. Priority: TIER 2',
+            }
+        )
+
+        # Makueni County Investment Authority
+        makueni_investment, _ = Organization.objects.get_or_create(
+            name='Makueni County Investment Authority (MCIAA)',
+            defaults={
+                'type': govt_type,
+                'location': 'Makueni County',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'Established under MCIAA Act. Promote and coordinate investments in county. Learn investment promotion model, PPP structuring, investor facilitation services.',
+                'contact_strategy': 'Through county government. Priority: TIER 3',
+            }
+        )
+
+        # 6. FARMER COOPERATIVES & ASSOCIATIONS
+        
+        # Makueni Fruit Processing Cooperative Society Ltd.
+        makueni_coop, _ = Organization.objects.get_or_create(
+            name='Makueni Fruit Processing Cooperative Society Ltd.',
+            defaults={
+                'type': coop_type,
+                'category': top_priority,
+                'location': 'Makueni County',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Largest cooperative in Makueni. Members: 3,500 farmers. Successful aggregation model. Supplier to MCFDMA. Volume: 500 tons/season. Prices: KSh 12-15/kg. Formal structure (registered).',
+                'key_notes': 'Model for Kitui cooperatives. Training exchange opportunity. Joint marketing for larger volumes.',
+                'contact_strategy': 'Request introduction from Kevin Onyango or MCFDMA. Schedule meeting with cooperative leadership. Request: Coop structure, bylaws, farmer contracts, payment systems. Priority: TIER 1',
+            }
+        )
+
+        # Kwiminia CBO (Women's Aggregation Group)
+        kwiminia_cbo, _ = Organization.objects.get_or_create(
+            name='Kwiminia CBO (Women\'s Aggregation Group)',
+            defaults={
+                'type': coop_type,
+                'category': top_priority,
+                'location': 'Makueni County',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Women-led CBO. Innovation: Cold storage plant built from local materials! Capacity: 40-50 tons storage. Activities: Buying, grading, sorting, bagging, transport.',
+                'key_notes': 'Low-cost cold storage design (CRITICAL for your facility!). Women-led (aligns with WOSB certification). Successful aggregation model. Local materials = replicable.',
+                'contact_strategy': 'Request introduction from Kevin Onyango or DNRC. Schedule site visit to cold storage facility. Request: Design plans/specs, construction costs, operating costs, materials list, technical drawings. MUST VISIT - Priority: TIER 1',
+            }
+        )
+
+        # Association of Kenya Mango Traders (AKMT)
+        akmt, _ = Organization.objects.get_or_create(
+            name='Association of Kenya Mango Traders (AKMT)',
+            defaults={
+                'type': private_type,
+                'category': top_priority,
+                'location': 'Nairobi and Mombasa wholesale markets',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Established 2017. Members: 71+ mango traders (growing annually). READY-MADE DISTRIBUTION NETWORK for dried mango. Markets: Wakulima, City Park, Ngara, Kangemi, Kawangware, Githurai, Kongowea (Nairobi + Mombasa).',
+                'key_notes': 'National reach (not just Makueni/Kitui). Advocacy power (county government relations). Bulk purchasing power. Activities: Market access, finance facilitation, trade opportunities, lobbying, industry standards.',
+                'contact_strategy': 'Identify AKMT members in Wakulima Market (Nairobi). Request meeting with AKMT leadership. Present dried mango opportunity. Offer: Consistent supply of export-grade dried mango. Priority: TIER 1',
+            }
+        )
+
+        # 7. NGOs & DEVELOPMENT ORGANIZATIONS
+        
+        # Drylands Natural Resources Center (DNRC)
+        dnrc, _ = Organization.objects.get_or_create(
+            name='Drylands Natural Resources Center (DNRC) - Makueni Agroecological Living Landscape (ALL)',
+            defaults={
+                'type': ngo_type,
+                'category': top_priority,
+                'location': 'Mbooni sub-county, Makueni County',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Host center for CGIAR Agroecology Initiative. Active in both Makueni AND could expand to Kitui. Activities: Mango seedling production (certified nursery), farmer training (IPM, agroecology, value addition), 16 farmer groups (organized), Moringa production/export facilitation.',
+                'key_notes': 'Farmer mobilization expertise. Training infrastructure. Agroecological approach (aligned). CGIAR partner.',
+                'contact_strategy': 'Introduction through Kevin Onyango (they hosted CGIAR study). Schedule visit to DNRC center. Meet: Director, Extension team, Farmer group coordinators. Explore: Expansion to Kitui County. Priority: TIER 1',
+            }
+        )
+
+        # TechnoServe - YieldWise Program (update existing)
+        if technoserve:
+            technoserve.priority = 'critical'
+            technoserve.category = top_priority
+            technoserve.key_notes = 'Rockefeller Foundation funding precedent. Active next door (Makueni). Exact same mission (post-harvest loss reduction). Could expand to Kitui or co-fund. Market access expertise. Priority: TIER 1 - Contact within 2 weeks'
+            technoserve.contact_strategy = 'Email: Reference YieldWise success in Makueni. Propose: Expansion to Kitui with your technology. Offer: Superior hybrid tech vs. existing solar-only. Request: Meeting to discuss partnership. Phone: +254 20 2712020 (Nairobi office)'
+            technoserve.save()
+
+        # 8. PRIVATE SECTOR PROCESSORS
+        
+        # Kevian Kenya Ltd.
+        kevian, _ = Organization.objects.get_or_create(
+            name='Kevian Kenya Ltd.',
+            defaults={
+                'type': private_type,
+                'location': 'Thika, Central Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Large commercial processor. Products: Mango juice, pulp. Sources From: Muranga, Embu, Machakos, Makueni. National reach.',
+                'contact_strategy': 'Request meeting with procurement manager. Present: Dried mango opportunity or fresh supply from Kitui. Ask: Quality specs, volume requirements, pricing. Priority: TIER 2',
+                'website': 'www.kevian.co.ke',
+            }
+        )
+
+        # Sunny Mango
+        sunny_mango, _ = Organization.objects.get_or_create(
+            name='Sunny Mango',
+            defaults={
+                'type': private_type,
+                'location': 'Thika, Central Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Dried mango producer (direct competitor/potential partner). Products: Dried mango, juice. Model: Nucleus farm + contract farmers. Sources From: Muranga, Embu, Machakos, Makueni. Export market access.',
+                'contact_strategy': 'Competitive intelligence (what\'s their pricing, quality, markets?). Potential partnership (you supply, they market). Learn contract farming model. Priority: TIER 2',
+            }
+        )
+
+        # Milly - Coast Processing
+        milly_coast, _ = Organization.objects.get_or_create(
+            name='Milly - Coast Processing',
+            defaults={
+                'type': private_type,
+                'location': 'Coast region (Mombasa area)',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'Products: Pulp, juice, concentrates (only Kenyan firm doing concentrates). Sources From: Coast production zone (Ngowe variety). Specialty: Concentrates for COMESA regional market.',
+                'contact_strategy': 'Explore mango concentrate opportunity. Potential Partnership: Fresh mango supply or concentrate production. Priority: TIER 3',
+            }
+        )
+
+        # Allfruits
+        allfruits, _ = Organization.objects.get_or_create(
+            name='Allfruits',
+            defaults={
+                'type': private_type,
+                'location': 'Miritini Export Processing Zone, Mombasa',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'Export focus. Requirement: Export most production (EPZ rules). Products: Processed mango for export.',
+                'contact_strategy': 'Export market collaboration. Potential Partnership: Export channel for your dried mango. Priority: TIER 3',
+            }
+        )
+
+        # 9. RESEARCH INSTITUTIONS
+        
+        # ICRAF/World Agroforestry
+        icraf, _ = Organization.objects.get_or_create(
+            name='International Centre for Research in Agroforestry (ICRAF/World Agroforestry)',
+            defaults={
+                'type': research_type,
+                'location': 'Nairobi, Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'CIFOR-ICRAF merged. Mentioned in study: Mango diversity research, stakeholder in Makueni. Expertise: Agroforestry, mango varieties, integrated systems.',
+                'website': 'www.cifor-icraf.org',
+                'contact_strategy': 'Request: Technical consultation on mango agroforestry. Explore: Research collaboration. Priority: TIER 2',
+            }
+        )
+
+        # ICIPE - Integrated Pest Management
+        icipe, _ = Organization.objects.get_or_create(
+            name='International Centre of Insect Physiology and Ecology (ICIPE) - IPM Program',
+            defaults={
+                'type': research_type,
+                'category': top_priority,
+                'location': 'Nairobi, Kenya (HQ), field sites in Makueni',
+                'priority': 'critical',
+                'status': 'prospect',
+                'description': 'Mentioned in study: Fruit fly IPM research in Makueni. Expertise: Fruit fly control (pheromone traps), biological pest management, farmer training on IPM, Fruit Fly Free Zones (FFFZ) initiative.',
+                'key_notes': 'Critical for farmer training (pest management). Active in Makueni, could work in Kitui. Fruit fly = #1 cause of post-harvest losses. FFFZ program = county-level initiative.',
+                'website': 'www.icipe.org',
+                'contact_strategy': 'Request meeting with IPM program lead. Ask: Expansion of FFFZ to Kitui. Explore: Integrated support (you process, they control pests). Priority: TIER 1',
+            }
+        )
+
+        # 10. FINANCIAL INSTITUTIONS
+        
+        # Juhudi Kilimo
+        juhudi, _ = Organization.objects.get_or_create(
+            name='Juhudi Kilimo',
+            defaults={
+                'type': financial_type,
+                'location': 'Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Microfinance institution. Mentioned in study: Provides credit to Makueni farmers. Specialty: Agricultural loans.',
+                'website': 'www.juhudikilimo.com',
+                'contact_strategy': 'Explore: Loan products for mango farmers in Kitui. Partnership: Your farmers get preferential loans. Priority: TIER 2',
+            }
+        )
+
+        # 11. GOVERNMENT AGENCIES
+        
+        # Ministry of Agriculture, Livestock, Fisheries & Cooperatives - ASCU
+        moalfc_ascu, _ = Organization.objects.get_or_create(
+            name='Ministry of Agriculture, Livestock, Fisheries & Cooperatives - Agricultural Sector Coordination Unit (ASCU)',
+            defaults={
+                'type': govt_type,
+                'location': 'Nairobi, Kilimo House',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'National level. Role: Inter-ministerial coordination, policy formulation. Mentioned in study: Led development of horticulture policy.',
+                'contact_strategy': 'After county-level partnerships established. Information Needed: National mango sector strategy, county support programs. Priority: TIER 3',
+            }
+        )
+
+        # Horticultural Crops Development Authority (HCDA)
+        hcda, _ = Organization.objects.get_or_create(
+            name='Horticultural Crops Development Authority (HCDA)',
+            defaults={
+                'type': govt_type,
+                'location': 'Nairobi',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Role: Regulation, development, data collection for horticulture. Data Source: Kenya mango production statistics (cited in study).',
+                'website': 'www.hcda.or.ke',
+                'contact_strategy': 'Request: Mango sector briefing. Ask: Kitui County production data. Explore: Support programs for processors. Priority: TIER 2',
+            }
+        )
+
+        # Kenya Plant Health Inspectorate Services (KEPHIS)
+        kephis, _ = Organization.objects.get_or_create(
+            name='Kenya Plant Health Inspectorate Services (KEPHIS) - FFFZ Program',
+            defaults={
+                'type': govt_type,
+                'location': 'Kenya',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Program: FFFZ (Fruit Fly Free Zones) initiative. Role: Pest control, export certification, quality standards. Mentioned in study: Leading FFFZ campaign in Makueni with county government.',
+                'website': 'www.kephis.org',
+                'contact_strategy': 'Request: FFFZ program details for Kitui. Ask: Certification requirements for processing facility. Explore: Partnership on farmer training. Priority: TIER 2',
+            }
+        )
+
+        # 12. EXPORTERS & MARKET ACTORS
+        
+        # Fresh Produce Exporters Association of Kenya (FPEAK)
+        fpeak, _ = Organization.objects.get_or_create(
+            name='Fresh Produce Exporters Association of Kenya (FPEAK)',
+            defaults={
+                'type': private_type,
+                'location': 'Nairobi',
+                'priority': 'high',
+                'status': 'prospect',
+                'description': 'Members: Major exporters (Keitt Exporters, Mackay, others). Role: Export facilitation, market intelligence, advocacy.',
+                'website': 'www.fpeak.org',
+                'contact_strategy': 'Membership inquiry. Export market research. Buyer introductions. Priority: TIER 2',
+            }
+        )
+
+        # Horticulture Council of Africa (HCA)
+        hca, _ = Organization.objects.get_or_create(
+            name='Horticulture Council of Africa (HCA)',
+            defaults={
+                'type': private_type,
+                'location': 'Regional (Africa-wide)',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'Scope: Regional (Africa-wide). Role: Market development, policy advocacy, capacity building. Mentioned in study: Stakeholder in value chain.',
+                'contact_strategy': 'After establishing Kenya operations. Information Needed: COMESA market opportunities for dried mango. Priority: TIER 3',
+            }
+        )
+
+        # 13. UNIVERSITIES
+        
+        # University of Machakos
+        machakos_univ, _ = Organization.objects.get_or_create(
+            name='University of Machakos',
+            defaults={
+                'type': univ_type,
+                'location': 'Machakos County (adjacent to Makueni and Kitui)',
+                'priority': 'medium',
+                'status': 'prospect',
+                'description': 'Local university in mango belt. Mentioned in study: Research stakeholder. Expertise: Agriculture, rural development.',
+                'website': 'www.machakosuniversity.ac.ke',
+                'contact_strategy': 'Explore research collaboration, student interns. Potential Partnership: Student projects, field trials. Priority: TIER 3',
+            }
+        )
+
+        self.stdout.write(self.style.SUCCESS(f'\n✅ Total Organizations: {Organization.objects.count()}'))
+        self.stdout.write(self.style.SUCCESS(f'✅ Total Contacts: {Contact.objects.count()}'))
