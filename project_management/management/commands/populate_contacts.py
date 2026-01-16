@@ -42,8 +42,6 @@ class Command(BaseCommand):
         self.create_organizations_and_contacts()
 
         self.stdout.write(self.style.SUCCESS('\n✅ Successfully populated contact database!'))
-        self.stdout.write(f'Total Organizations: {Organization.objects.count()}')
-        self.stdout.write(f'Total Contacts: {Contact.objects.count()}')
 
     def create_organization_types(self):
         """Create organization types"""
