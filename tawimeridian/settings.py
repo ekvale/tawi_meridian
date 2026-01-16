@@ -209,11 +209,28 @@ SOCIAL_LINKS = {
     'facebook': env('FACEBOOK_URL', default=''),
 }
 
-# Impact metrics (can be moved to database or settings later)
+# Impact metrics - Mango Project Statistics
 IMPACT_METRICS = {
-    'education_kenyans': 500,
-    'energy_savings_percent': 45,
-    'automated_scripts': 75,
+    # The Problem
+    'post_harvest_loss_percent': 45,  # 40-50% average
+    'current_processing_percent': 1,  # <1% currently processed
+    'kitui_waste_tonnes': 70000,  # 40,000-100,000 tonnes wasted annually (using midpoint)
+    'value_lost_millions': 10.5,  # $6-15 million in lost income (using midpoint)
+    
+    # The Solution (per facility)
+    'farmers_per_facility': 350,  # 200-500 farmers
+    'waste_prevented_tonnes': 60,  # 60 tonnes per season
+    'income_increase_percent': 98,  # 50-147% average (using midpoint)
+    'jobs_per_facility': 8,  # 6-10 direct jobs
+    
+    # At Scale (10 facilities)
+    'farmers_at_scale': 3500,  # 2,000-5,000 farmers
+    'waste_prevented_at_scale': 600,  # 600 tonnes
+    'economic_impact_millions': 1.5,  # $1-2M county economic impact
+    
+    # Technology Advantages
+    'throughput_increase': 250,  # 2-3x more than solar-only
+    'season_extension_months': 8,  # 8-10 months vs 4 months
 }
 
 # Logging configuration

@@ -10,11 +10,12 @@
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="font-heading font-bold text-4xl md:text-5xl lg:text-6xl mb-6">
-                Engineering Climate Solutions,<br>Building Community Resilience
+                40-50% of Kenya's Mango Harvest<br>is Wasted Every Year
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 mb-8">
-                From solar driers in rural Kenya to data-driven solutions - 
-                Tawi Meridian delivers technical excellence with grassroots impact.
+                In Kitui County alone, 40,000-100,000 tonnes of mangoes rot annually—representing $6-15 million in lost farmer income.<br>
+                Existing processing capacity handles less than 1% of this waste.<br>
+                <strong class="text-white">We're changing that.</strong>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{% url 'contact:contact' %}" class="bg-tawi-orange hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors">
@@ -28,27 +29,154 @@
     </div>
 </section>
 
-{# Impact Metrics #}
+{# The Problem - Key Statistics #}
+<section class="py-16 bg-red-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl text-red-800 mb-4">The Problem: Post-Harvest Waste Crisis</h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                The numbers don't lie—massive food loss is destroying farmer livelihoods and wasting precious resources.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-l-4 border-red-500">
+                <div class="text-5xl font-bold text-red-600 mb-2" data-count="{{ impact_metrics.post_harvest_loss_percent }}">
+                    {{ impact_metrics.post_harvest_loss_percent }}%
+                </div>
+                <p class="text-gray-700 text-lg font-semibold">Post-Harvest Losses</p>
+                <p class="text-gray-600 text-sm mt-2">40-50% of Kenya's mango harvest is lost every year (KALRO, 2024)</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-l-4 border-orange-500">
+                <div class="text-5xl font-bold text-orange-600 mb-2" data-count="{{ impact_metrics.current_processing_percent }}">
+                    {{ impact_metrics.current_processing_percent }}%
+                </div>
+                <p class="text-gray-700 text-lg font-semibold">Currently Processed</p>
+                <p class="text-gray-600 text-sm mt-2">Less than 1% of post-harvest losses are being processed</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-l-4 border-red-700">
+                <div class="text-4xl font-bold text-red-700 mb-2" data-count="{{ impact_metrics.kitui_waste_tonnes }}">
+                    {{ impact_metrics.kitui_waste_tonnes|intcomma }}+
+                </div>
+                <p class="text-gray-700 text-lg font-semibold">Tonnes Wasted Annually</p>
+                <p class="text-gray-600 text-sm mt-2">In Kitui County alone—${{ impact_metrics.value_lost_millions }}M in lost income</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# The Solution - Technology Advantages #}
 <section class="py-16 bg-tawi-light">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center">
-                <div class="text-5xl font-bold text-tawi-blue mb-2" data-count="{{ impact_metrics.education_kenyans }}">
-                    {{ impact_metrics.education_kenyans }}+
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl text-tawi-blue mb-4">The Solution: Hybrid Solar-Biomass Technology</h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                Our hybrid technology delivers 2-3x more throughput than solar-only dryers with consistent export-grade quality.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <div class="text-4xl font-bold text-tawi-blue mb-2" data-count="{{ impact_metrics.throughput_increase }}">
+                    {{ impact_metrics.throughput_increase }}%
                 </div>
-                <p class="text-gray-600 text-lg">Kenyans empowered through climate education</p>
+                <p class="text-gray-700 font-semibold">More Throughput</p>
+                <p class="text-gray-600 text-sm mt-2">2-3x capacity vs. solar-only dryers</p>
             </div>
-            <div class="text-center">
-                <div class="text-5xl font-bold text-tawi-green mb-2" data-count="{{ impact_metrics.energy_savings_percent }}">
-                    {{ impact_metrics.energy_savings_percent }}%
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <div class="text-4xl font-bold text-tawi-green mb-2" data-count="{{ impact_metrics.season_extension_months }}">
+                    {{ impact_metrics.season_extension_months }}
                 </div>
-                <p class="text-gray-600 text-lg">Energy savings through hybrid renewable systems</p>
+                <p class="text-gray-700 font-semibold">Months Operating</p>
+                <p class="text-gray-600 text-sm mt-2">8-10 months vs. 4 months solar-only</p>
             </div>
-            <div class="text-center">
-                <div class="text-5xl font-bold text-tawi-orange mb-2" data-count="{{ impact_metrics.automated_scripts }}">
-                    {{ impact_metrics.automated_scripts }}+
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <div class="text-3xl font-bold text-tawi-orange mb-2">&lt;12%</div>
+                <p class="text-gray-700 font-semibold">Moisture Content</p>
+                <p class="text-gray-600 text-sm mt-2">Export-grade quality guaranteed</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2">10-15h</div>
+                <p class="text-gray-700 font-semibold">Drying Time</p>
+                <p class="text-gray-600 text-sm mt-2">vs. 24-48 hours solar-only</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Impact Potential - Per Facility #}
+<section class="py-16 bg-gradient-to-br from-green-50 to-blue-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl text-tawi-blue mb-4">Impact Potential: What One Facility Can Achieve</h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+                A single medium-scale facility transforms lives and prevents massive waste during the 4-month peak season.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-t-4 border-tawi-blue">
+                <div class="text-4xl font-bold text-tawi-blue mb-2" data-count="{{ impact_metrics.farmers_per_facility }}">
+                    {{ impact_metrics.farmers_per_facility }}
                 </div>
-                <p class="text-gray-600 text-lg">Automated database scripts managing public health data</p>
+                <p class="text-gray-700 font-semibold">Farmers Served</p>
+                <p class="text-gray-600 text-sm mt-2">200-500 smallholders per facility</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-t-4 border-tawi-green">
+                <div class="text-4xl font-bold text-tawi-green mb-2" data-count="{{ impact_metrics.waste_prevented_tonnes }}">
+                    {{ impact_metrics.waste_prevented_tonnes }}
+                </div>
+                <p class="text-gray-700 font-semibold">Tonnes Waste Prevented</p>
+                <p class="text-gray-600 text-sm mt-2">Per 4-month season</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-t-4 border-tawi-orange">
+                <div class="text-4xl font-bold text-tawi-orange mb-2" data-count="{{ impact_metrics.income_increase_percent }}">
+                    {{ impact_metrics.income_increase_percent }}%
+                </div>
+                <p class="text-gray-700 font-semibold">Income Increase</p>
+                <p class="text-gray-600 text-sm mt-2">50-147% documented examples</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 text-center border-t-4 border-purple-600">
+                <div class="text-4xl font-bold text-purple-600 mb-2" data-count="{{ impact_metrics.jobs_per_facility }}">
+                    {{ impact_metrics.jobs_per_facility }}+
+                </div>
+                <p class="text-gray-700 font-semibold">Jobs Created</p>
+                <p class="text-gray-600 text-sm mt-2">6-10 direct, 20+ indirect</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Scale Impact - 10 Facilities #}
+<section class="py-16 bg-blue-900 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-heading font-bold text-3xl md:text-4xl mb-4">At Scale: 10 Facilities Transform a County</h2>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                Scaling to 10 facilities creates transformational economic impact across Kitui County.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center border border-white/20">
+                <div class="text-4xl font-bold mb-2" data-count="{{ impact_metrics.farmers_at_scale }}">
+                    {{ impact_metrics.farmers_at_scale|intcomma }}+
+                </div>
+                <p class="text-blue-100 font-semibold">Farmers Served</p>
+                <p class="text-blue-200 text-sm mt-2">2,000-5,000 smallholders</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center border border-white/20">
+                <div class="text-4xl font-bold mb-2" data-count="{{ impact_metrics.waste_prevented_at_scale }}">
+                    {{ impact_metrics.waste_prevented_at_scale }}
+                </div>
+                <p class="text-blue-100 font-semibold">Tonnes Waste Prevented</p>
+                <p class="text-blue-200 text-sm mt-2">Per season across all facilities</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center border border-white/20">
+                <div class="text-3xl font-bold mb-2">${{ impact_metrics.economic_impact_millions }}M</div>
+                <p class="text-blue-100 font-semibold">Economic Impact</p>
+                <p class="text-blue-200 text-sm mt-2">$1-2M county economic impact annually</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center border border-white/20">
+                <div class="text-4xl font-bold mb-2">60-100</div>
+                <p class="text-blue-100 font-semibold">Jobs Created</p>
+                <p class="text-blue-200 text-sm mt-2">Direct employment + 200+ indirect</p>
             </div>
         </div>
     </div>
