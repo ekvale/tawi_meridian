@@ -179,13 +179,6 @@ class Contact(models.Model):
                 name='unique_contact_email_per_org'
             ),
         ]
-        constraints = [
-            models.UniqueConstraint(
-                fields=['organization', 'email'],
-                condition=models.Q(email__isnull=False) & ~models.Q(email=''),
-                name='unique_contact_email_per_org'
-            ),
-        ]
     
     def __str__(self):
         return f"{self.get_full_name()} - {self.organization.name}"
