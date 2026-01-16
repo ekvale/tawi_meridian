@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block og_title %}{{ page_title|default:"Home" }} | {{ site_name }}{% endblock %}
 {% block og_description %}{{ meta_description|default:"Engineering Climate Solutions, Building Community Resilience" }}{% endblock %}
