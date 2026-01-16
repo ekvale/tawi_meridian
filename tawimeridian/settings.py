@@ -165,6 +165,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # IMPORTANT: In production, set CSRF_TRUSTED_ORIGINS in .env file
 # Example: CSRF_TRUSTED_ORIGINS=https://tawimeridian.com,https://www.tawimeridian.com
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+# Disable referer checking if behind a proxy (Nginx) that may not preserve referer
+# This is safe when CSRF_TRUSTED_ORIGINS is properly configured
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False  # Use cookie-based CSRF (default)
 
 # Security settings (enable in production)
 if not DEBUG:
